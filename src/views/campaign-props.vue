@@ -1,0 +1,630 @@
+<template>
+  <div class="campaign__form">
+    <b-form
+        class="form"
+        @submit="onSubmit"
+    >
+
+      <div class="row">
+        <label class="form-label text-black"><strong>Регион трансляции</strong></label>
+        <b-form-group
+            id="select-group-region"
+            class="col-12 mt-auto"
+        >
+
+          <b-form-input
+              v-b-toggle="`collapse-region`"
+              class="campaign__form-region form-select form-select-lg form-select-collapse"
+              autocomplete="off"
+              :state="selectedRegionsError"
+              :value="selectedRegions"
+              :placeholder="selectedRegions"
+          ></b-form-input>
+          <b-collapse
+              id="collapse-region"
+              class="form-collapse"
+          >
+            <b-list-group
+                class="list-group-no-border"
+            >
+              <b-list-group-item
+                  v-for="(region, ridx) in regions"
+                  :key="region.value"
+                  class="pe-0"
+              >
+                <b-button
+                    v-b-toggle="`collapse-region-${ridx}`"
+                    class="float-end m--collapse"
+                >
+                </b-button>
+                <b-form-checkbox
+                    name="regions"
+                    :value="region.value"
+                    @click.stop="changeRegion(region.value, $event, region.options)"
+                    @change="changeRegion(region.value, $event, region.options)"
+                >
+                  {{ region.name }}
+                </b-form-checkbox>
+                <b-collapse
+                    :id="`collapse-region-${ridx}`"
+                >
+                  <b-list-group
+                      class="list-group-no-border"
+                  >
+                    <b-list-group-item
+                        v-for="(area, aidx) in region.options"
+                        :key="area.id"
+                        class="pe-0"
+                    >
+                      <b-button
+                          v-if="area.options"
+                          v-b-toggle="`collapse-region-${ridx}-${aidx}`"
+                          class="float-end m--collapse"
+                      >
+                      </b-button>
+                      <b-form-checkbox
+                          v-model="campaign.regions"
+                          name="regions"
+                          :value="area.id"
+                          @change="changeRegion(area.id, $event)"
+                      >
+                        {{ area.regions }}
+                      </b-form-checkbox>
+                      <b-collapse
+                          v-if="area.options"
+                          :id="`collapse-region-${ridx}-${aidx}`"
+                      >
+                        <b-list-group
+                            class="list-group-no-border"
+                        >
+                          <b-list-group-item
+                              v-for="(city) in area.options"
+                              :key="city.value"
+                          >
+                            <b-form-checkbox
+                                v-model="campaign.regions"
+                                name="regions"
+                                :value="city.value"
+                            >
+                              {{ city.name }}
+                            </b-form-checkbox>
+                          </b-list-group-item>
+                        </b-list-group>
+                      </b-collapse>
+                    </b-list-group-item>
+                  </b-list-group>
+                </b-collapse>
+              </b-list-group-item>
+            </b-list-group>
+          </b-collapse>
+        </b-form-group>
+
+        <div
+            v-if="campaign.regions.length && isPersonal"
+            class="col-12 mb-3"
+        >
+          <div class="form-control h3">
+            Стоимость выхода ролика: {{ airingPrice }} ₽
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <label class="form-label text-black"><strong>Расписание показов</strong></label>
+        <b-form-group
+            v-if="showTimeZone"
+            id="select-group-country"
+            class="col-12 col-sm-6 mt-auto"
+            label="Часовой пояс"
+        >
+          <b-form-select
+              id="select-country"
+              v-model="campaign.country"
+              :options="timezoneCountry"
+              required
+              size="lg"
+          ></b-form-select>
+        </b-form-group>
+
+        <b-form-group
+            v-if="showTimeZone"
+            id="select-group-city"
+            class="col-12 col-sm-6 mt-auto"
+        >
+          <b-form-select
+              id="select-city"
+              v-model="campaign.timezone"
+              :options="timezoneHour"
+              required
+              size="lg"
+          ></b-form-select>
+        </b-form-group>
+      </div>
+
+
+      <div
+          v-for="(period, index) in campaign.campaign_schedule_data"
+          :key="`campaign-period-${index}`"
+          class="row"
+      >
+        <b-form-group
+            id="date-group-start"
+            :label="!index ? 'Начало кампании' : ''"
+            class="col col-sm-5 mt-auto mb-2"
+        >
+          <DatePicker
+              v-model="period.campaign_start"
+              :model-config="calendarConfig"
+              :masks="masks"
+              :min-date="this.$helpers.formatDate(new Date(), 'YYYY-MM-DD')"
+              :max-date="period.campaign_end"
+              is-required
+              mode="date"
+              color="orange"
+              @dayclick="changeCampaignStartDate"
+          >
+            <template v-slot="{ inputValue, inputEvents }">
+              <b-form-input
+                  name="campaign_start"
+                  placeholder="дд.мм.гггг"
+                  readonly
+                  required
+                  size="lg"
+                  :value="inputValue"
+                  v-on="inputEvents"
+                  :state="!index ? campaignStartDateError : null"
+              ></b-form-input>
+            </template>
+          </DatePicker>
+        </b-form-group>
+        <b-form-group
+            id="date-group-end"
+            :label="!index ? 'Конец кампании' : ''"
+            class="col col-sm-5 mt-auto mb-2"
+        >
+          <DatePicker
+              v-model="period.campaign_end"
+              :model-config="calendarConfig"
+              :masks="masks"
+              :min-date="period.campaign_start || this.$helpers.formatDate(new Date(), 'YYYY-MM-DD')"
+              is-required
+              mode="date"
+              color="orange"
+              @dayclick="changeCampaignEndDate"
+          >
+            <template v-slot="{ inputValue, inputEvents }">
+              <b-form-input
+                  name="campaign_end"
+                  placeholder="дд.мм.гггг"
+                  readonly
+                  required
+                  size="lg"
+                  :value="inputValue"
+                  v-on="inputEvents"
+                  :state="!index ? campaignEndDateError : null"
+              ></b-form-input>
+            </template>
+          </DatePicker>
+        </b-form-group>
+        <b-button
+            v-if="index"
+            class="m--delete"
+            @click.prevent="deleteCompanyPeriod(index)"
+        >
+        </b-button>
+      </div>
+      <!--
+      <DatePicker
+          v-for="(period, index) in campaign.campaign_schedule_data"
+          :key="`campaign-period-${index}`"
+          v-model="campaign.campaign_schedule_data[index]"
+          mode="date"
+          :masks="masks"
+          :min-date="new Date()"
+          :columns="2"
+          is-range
+      >
+          <template v-slot="{ inputValue, inputEvents }">
+              <div class="row">
+                  <b-form-group
+                      id="date-group-start"
+                      :label="!index ? 'Начало кампании' : ''"
+                      class="col col-sm-5 mt-auto mb-2"
+                  >
+                      <b-form-input
+                          name="campaign_start"
+                          readonly
+                          required
+                          size="lg"
+                          :value="inputValue.start"
+                          v-on="inputEvents.start"
+                      ></b-form-input>
+                  </b-form-group>
+                  <b-form-group
+                      id="date-group-end"
+                      :label="!index ? 'Конец кампании' : ''"
+                      class="col col-sm-5 mt-auto mb-2"
+                  >
+                      <b-form-input
+                          name="campaign_end"
+                          readonly
+                          required
+                          size="lg"
+                          :value="inputValue.end"
+                          v-on="inputEvents.end"
+                      ></b-form-input>
+                  </b-form-group>
+                  <b-button
+                      v-if="index"
+                      class="m--delete"
+                      @click.prevent="deleteCompanyPeriod(index)"
+                  >
+                  </b-button>
+              </div>
+          </template>
+      </DatePicker>
+      -->
+      <!--
+      <div
+          v-for="(period, index) in campaign.campaign_schedule_data"
+          :key="`campaign-period-${index}`"
+          class="row"
+      >
+          <b-form-group
+              id="date-group-start"
+              :label="!index ? 'Начало кампании' : ''"
+              class="col col-sm-5 mt-auto mb-2"
+          >
+              <b-form-input
+                  id="date-start"
+                  v-model="period.campaign_start"
+                  name="campaign_start"
+                  type="date"
+                  :min="this.$helpers.formatDate(new Date(), 'YYYY-MM-DD')"
+                  :max="period.campaign_end"
+                  required
+                  size="lg"
+              ></b-form-input>
+          </b-form-group>
+
+          <b-form-group
+              id="date-group-end"
+              :label="!index ? 'Конец кампании' : ''"
+              class="col col-sm-5 mt-auto mb-2"
+          >
+              <b-form-input
+                  id="date-end"
+                  v-model="period.campaign_end"
+                  name="campaign_end"
+                  type="date"
+                  :min="period.campaign_start || this.$helpers.formatDate(new Date(), 'YYYY-MM-DD')"
+                  required
+                  size="lg"
+              ></b-form-input>
+          </b-form-group>
+          <b-button
+              v-if="index"
+              class="m--delete"
+              @click.prevent="deleteCompanyPeriod(index)"
+          >
+          </b-button>
+      </div>
+      -->
+      <div
+          v-if="campaign.campaign_schedule"
+          class="row"
+      >
+        <div class="col-12 col-md-6 col-lg-5">
+          <b-button
+              variant="outline-warning"
+              class="d-block w-100 mb-3"
+              size="lg"
+              @click.prevent="addCompanyPeriod()"
+          >
+            Добавить период
+          </b-button>
+        </div>
+      </div>
+
+
+      <div class="row mb-3">
+        <div class="col-12">
+          <b-form-checkbox
+              v-model="campaign.campaign_schedule"
+              name="campaign_schedule"
+              switch
+          >
+            Настроить периоды кампании
+          </b-form-checkbox>
+        </div>
+      </div>
+
+      <div
+          v-if="!campaign.time_schedule"
+          class="row"
+      >
+        <b-form-group
+            id="select-group-period"
+            class="col-12 col-sm-6 mt-auto"
+            label="Показывать объявления"
+        >
+          <b-form-select
+              id="select-period"
+              v-model="campaign.time_period_type"
+              :options="typePeriod"
+              required
+              size="lg"
+          ></b-form-select>
+        </b-form-group>
+
+        <b-form-group
+            id="select-group-period-start"
+            class="col-6 col-sm-3 mt-auto"
+        >
+          <b-form-select
+              id="select-period-start"
+              v-model="campaign.time_period_start"
+              :options="timePeriod"
+              required
+              size="lg"
+          ></b-form-select>
+        </b-form-group>
+
+        <b-form-group
+            id="select-group-period-end"
+            class="col-6 col-sm-3 mt-auto"
+        >
+          <b-form-select
+              id="select-period-end"
+              v-model="campaign.time_period_end"
+              :options="timePeriod"
+              required
+              size="lg"
+          ></b-form-select>
+        </b-form-group>
+      </div>
+      <template v-if="isPersonal">
+        <timeTable
+            :show="campaign.time_schedule"
+            @changeScheduleData="changeScheduleData"
+        />
+        <div class="row mb-3">
+          <div class="col-12">
+            <b-form-checkbox
+                v-model="campaign.time_schedule"
+                name="schedule"
+                switch
+            >
+              Включить почасовую настройку
+            </b-form-checkbox>
+          </div>
+        </div>
+      </template>
+      <template v-else>
+        <div class="row mb-3">
+          <label class="form-label text-black"><strong>Время выхода объявления</strong></label>
+          <div class="row">
+            <div
+                class="col-2"
+                v-for="(day,index) in showTime"
+                :key="day.id+index"
+            >
+              <b-form-checkbox
+                  class="col-6"
+                  v-model="day.select"
+              >
+                {{ day.name }}
+              </b-form-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="card p-3 mb-3">
+          <label class="form-label text-black mb-3"><strong>Стоимость выхода объявления: {{ totalPrice }}
+            ₽</strong></label>
+          <label class="form-label text-black mb-4">Ваше объявление прозвучит в эфире в зависимости от выбранных
+            блоков:</label>
+          <span class="d-flex flex-column mb-4">
+            <label class=" text-black">Утро — с 8:00 до 12:00;</label>
+            <label class=" text-black">День — с 12:00 до 15:00;</label>
+            <label class=" text-black">Вечер — с 17:00 до 22:00.</label>
+          </span>
+          <label class="text-black">Время челябинское (+2 часа от московского).</label>
+        </div>
+      </template>
+      <b-button
+          type="submit"
+          variant="warning"
+          class="d-block col-12"
+          size="lg"
+      >
+        Продолжить
+      </b-button>
+    </b-form>
+  </div>
+</template>
+
+<script>
+import {DatePicker} from 'v-calendar';
+import 'v-calendar/dist/style.css';
+import {app} from "@/services";
+import timeTable from '@/components/timeTable';
+
+export default {
+  name: 'campaignProps',
+  components: {
+    DatePicker,
+    timeTable,
+  },
+  props: {},
+  data() {
+    return {
+      showTimeZone: false,
+      masks: {
+        input: 'DD.MM.YYYY',
+      },
+      calendarConfig: {
+        type: 'string',
+        mask: 'YYYY-MM-DD'
+      },
+      timezoneCountry: [
+        'Россия'
+      ],
+      timezoneHour: [{
+        text: 'Екатеринбург',
+        value: 5,
+        selected: true
+      }],
+      typePeriod: [
+        'Ежедневно',
+        'Рабочие дни',
+        'Выходные'
+      ],
+      timePeriod: [
+        '00:00', '01:00', '02:00', '03:00', '04:00', '05:00',
+        '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
+        '12:00', '13:00', '14:00', '15:00', '16:00', '17:00',
+        '18:00', '19:00', '20:00', '21:00', '22:00', '23:00',
+        '24:00'
+      ],
+      regions: [{
+        name: 'Россия',
+        value: 'Россия',
+        selected: false,
+        options: []
+      }],
+      showTime: [
+        {id: 'morning', name: 'Утро', value: '8:00', select: false},
+        {id: 'daytime', name: 'День', value: '12:00', select: false},
+        {id: 'evening', name: 'Вечер', value: '17:00', select: false}
+      ],
+      selectedRegionsError: null,
+      campaignStartDateError: null,
+      campaignEndDateError: null,
+      campaign: null,
+    };
+  },
+  computed: {
+    selectedRegions() {
+      if (this.campaign.regions.length == 0) {
+        return 'Выберите регионы трансляции';
+      } else if (this.campaign.regions.length > 2) {
+        return 'Выбрано ' + this.$helpers.stringForNumber(this.campaign.regions.length, ['город', 'города', 'городов']);
+      } else {
+        if (this.regions[0].options.length) {
+          let idx = this.campaign.regions.map(id => {
+            return this.regions[0].options.map(item => {
+              return item.id;
+            }).indexOf(id);
+          });
+          return idx.map(id => {
+            return this.regions[0].options[id].regions
+          }).join(', ');
+        }
+        return null;
+      }
+    },
+    airingPrice() {
+      let price = 0;
+      let idx = this.campaign.regions.map(id => {
+        return this.regions[0].options.map(item => {
+          return item.id;
+        }).indexOf(id);
+      });
+      idx.forEach(id => {
+        if (this.regions[0].options[id]) {
+          price += this.regions[0].options[id].airing_price;
+        }
+      });
+      return price;
+    },
+    isPersonal() {
+      return this.campaign.ads_type !== 'personal'
+    },
+    totalPrice() {
+      const activeTime = this.showTime.filter(time => time.select).length;
+      const quantityDays = this.countingDays(this.campaign.campaign_schedule_data);
+      return this.airingPrice * activeTime * quantityDays;
+    }
+  },
+  created() {
+    app.getRegions().then(res => {
+      this.regions[0].options = res;
+    }).catch(err => {
+      //this.$store.dispatch('showError', err);
+      console.error(err);
+    });
+    this.campaign = this.$store.state.campaign;
+  },
+  methods: {
+    changeRegion(index, data, childs) {
+      console.log(data, 'region')
+      if (childs) {
+        if (data === false) {
+          this.campaign.regions = [];
+        } else {
+          this.campaign.regions = childs.map(item => {
+            return item.id
+          });
+        }
+      }
+      if (this.selectedRegionsError === false && this.campaign.regions.length) {
+        this.selectedRegionsError = null;
+      }
+    },
+    countingDays(days) {
+      return days.reduce((total, day) => {
+        if (day.campaign_start && day.campaign_end) {
+          const startDate = new Date(day.campaign_start);
+          const endDate = new Date(day.campaign_end);
+          const diffInDays = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+          return total + diffInDays + 1;
+        } else {
+          return total;
+        }
+      }, 0);
+    },
+    addCompanyPeriod() {
+      this.campaign.campaign_schedule_data.push({});
+    },
+    deleteCompanyPeriod(index) {
+      this.campaign.campaign_schedule_data.splice(index, 1);
+    },
+    changeScheduleData(time_schedule_data) {
+      this.campaign.time_schedule_data = time_schedule_data;
+    },
+    changeCampaignStartDate(day) {
+      if (day.id) {
+        this.campaignStartDateError = null;
+      }
+    },
+    changeCampaignEndDate(day) {
+      if (day.id) {
+        this.campaignEndDateError = null;
+      }
+    },
+    onSubmit() {
+      let errors = false;
+      if (!this.campaign.campaign_schedule_data[0].campaign_start) {
+        errors = true;
+        this.campaignStartDateError = false;
+      }
+      if (!this.campaign.campaign_schedule_data[0].campaign_end) {
+        errors = true;
+        this.campaignEndDateError = false;
+      }
+      if (this.campaign.regions.length === 0) {
+        errors = true;
+        this.selectedRegionsError = false;
+      }
+      if (!errors) {
+        this.$store.dispatch('updateCampaign', {campaign: this.campaign});
+        this.$store.dispatch('setCampaignStep', {campaign_step: 2});
+        this.next();
+      }
+    },
+    next() {
+      this.$router.push({name: 'campaignPay'});
+    },
+  }
+};
+</script>

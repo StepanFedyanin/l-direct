@@ -1,0 +1,28 @@
+/*
+@import './lib/reset.css';
+*/
+@import './modules/fonts.scss';
+@import './settings.scss';
+
+@import './mixins/_breakpoints.scss';
+
+@import './common.scss';
+@import './modules/app.scss';
+@import './modules/sidebar.scss';
+@import './modules/topbar.scss';
+@import './modules/contacts.scss';
+
+@import './modules/auth.scss';
+@import './modules/home.scss';
+@import './modules/campaign.scss';
+@import './modules/campaigns.scss';
+@import './modules/profile.scss';
+/*
+@import './modules/basket.pcss';
+@import './modules/form.pcss';
+@import './modules/order.pcss';
+@import './modules/room.pcss';
+@import './modules/rooms.pcss';
+@import './modules/specials.pcss';
+@import './modules/tariffs.pcss';
+*/
