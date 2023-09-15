@@ -109,70 +109,6 @@
         class="campaign__ads-form"
     >
 
-<!--      <template-->
-<!--          v-if="campaign.ads_type === 'audio'"-->
-<!--      >-->
-<!--        <b-card-->
-<!--            v-if="adsFile.uploaded || adsFile.error"-->
-<!--            class="mb-3"-->
-<!--        >-->
-<!--          <b-card-text-->
-<!--              v-if="adsFile.error"-->
-<!--              class="d-flex"-->
-<!--          >-->
-<!--            <span class="h4 m-0 text-danger">{{ adsFile.error }}</span>-->
-<!--          </b-card-text>-->
-<!--          <b-card-text-->
-<!--              v-else-if="adsFile.uploaded"-->
-<!--              class="d-flex align-items-center"-->
-<!--          >-->
-<!--            <b-button-->
-<!--                v-if="!adsFile.play"-->
-<!--                variant="outline-warning"-->
-<!--                class="d-block me-3"-->
-<!--                @click="playAdsFile"-->
-<!--            >-->
-<!--              Play-->
-<!--            </b-button>-->
-<!--            <b-button-->
-<!--                v-if="adsFile.play"-->
-<!--                variant="outline-warning"-->
-<!--                class="d-block me-3"-->
-<!--                @click="stopAdsFile"-->
-<!--            >-->
-<!--              Stop-->
-<!--            </b-button>-->
-
-<!--            <a href="#" class="d-block h4 m-0">{{ adsFile.name }}</a><br>-->
-
-<!--            <b-button-->
-<!--                variant="warning"-->
-<!--                class="d-block ms-auto"-->
-<!--                @click="deleteAdsFile"-->
-<!--            >-->
-<!--              Удалить-->
-<!--            </b-button>-->
-<!--          </b-card-text>-->
-<!--          <b-card-text-->
-<!--              v-if="adsFile.file && adsFile.file.duration"-->
-<!--          >-->
-<!--            <b-progress :max="adsFile.file.duration">-->
-<!--              <b-progress-bar :value="adsFile.time" :label-html="`<small>${adsFile.time}</small>`"-->
-<!--                              variant="warning"></b-progress-bar>-->
-<!--            </b-progress>-->
-<!--          </b-card-text>-->
-<!--        </b-card>-->
-<!--        <b-button-->
-<!--            type="submit"-->
-<!--            variant="warning"-->
-<!--            class="d-block col-12"-->
-<!--            size="lg"-->
-<!--            :disabled="adsFile.file===null"-->
-<!--            @click="onSubmit"-->
-<!--        >-->
-<!--          Продолжить-->
-<!--        </b-button>-->
-<!--      </template>-->
       <template
           v-if="campaign.ads_type != null"
       >
@@ -331,7 +267,6 @@ export default {
   },
   data() {
     return {
-      showLoaderSending: false,
       campaign: null,
       showModalPolicy: false,
       showModalCampaignNew: false,
@@ -394,58 +329,26 @@ export default {
       this.showModalPolicy = false;
     },
     onSubmit() {
-      // this.$store.dispatch('updateCampaign', {campaign: this.campaign});
-      // this.$store.dispatch('setCampaignStep', {campaign_step: 3});
-      // if (this.campaign.ads_type !== 'audio') {
-      //   this.showLoaderSending = true;
-      //   this.stopAdsFile();
-      //   app.sendAdsInfo(this.campaign).then(res => {
-      //     this.campaign = res;
-      //     this.next('campaignFinish');
-      //   }).catch(err => {
-      //     this.showLoaderSending = false;
-      //     this.$store.dispatch('showError', err);
-      //     console.error(err);
-      //   });
-      // } else {
-      //   this.$store.dispatch('updateCampaign', {campaign: this.campaign});
-      //   this.stopAdsFile();
-      this.next();
-      // }
+      this.$store.dispatch('updateCampaign', {campaign: this.campaign});
+      this.$store.dispatch('setCampaignStep', {campaign_step: 3});
+      if (this.campaign.ads_type !== 'audio') {
+        this.showLoaderSending = true;
+        app.sendAdsInfo(this.campaign).then(res => {
+          this.campaign = res;
+          this.next('campaignFinish');
+        }).catch(err => {
+          this.showLoaderSending = false;
+          this.$store.dispatch('showError', err);
+          console.error(err);
+        });
+      } else {
+        this.$store.dispatch('updateCampaign', {campaign: this.campaign});
+        this.next();
+      }
     },
     next(name) {
       this.$router.push({name: name || 'campaignProps'});
     },
-    // playAdsFile() {
-    //   this.adsFile.play = true;
-    //   if (this.adsFile.file) {
-    //     this.adsFile.file.play();
-    //   }
-    // },
-    stopAdsFile() {
-      this.adsFile.play = false;
-      if (this.adsFile.file) {
-        this.adsFile.file.pause();
-      }
-    },
-    // deleteAdsFile() {
-    //   if (this.campaign.ads_file) {
-    //     this.stopAdsFile();
-    //     app.deleteAdsFile(this.campaign.ads_file).then(() => {
-    //       this.files = [];
-    //       this.adsFile = {
-    //         uploaded: false,
-    //         error: '',
-    //         file: null
-    //       };
-    //       this.campaign.ads_file = null;
-    //       this.$store.dispatch('updateCampaign', {campaign: this.campaign});
-    //     }).catch(err => {
-    //       console.error(err);
-    //       this.$store.dispatch('showError', err);
-    //     });
-    //   }
-    // }
   }
 };
 </script>

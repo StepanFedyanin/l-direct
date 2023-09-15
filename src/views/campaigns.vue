@@ -69,13 +69,10 @@ export default {
   created() {
     this.getCampaigns();
   },
-  watch() {
-  },
   methods: {
     getCampaigns() {
       app.getUserCampaigns().then(data => {
             this.campaigns = data;
-        console.log(data);
             this.showLoaderCamping = true;
           }
       ).catch(err => {

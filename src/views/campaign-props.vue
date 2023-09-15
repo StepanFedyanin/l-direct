@@ -18,7 +18,70 @@
       >
         Загрузить ролик 20 сек
       </file-upload>
+      <!--      <template-->
+      <!--          v-if="campaign.ads_type === 'audio'"-->
+      <!--      >-->
+      <!--        <b-card-->
+      <!--            v-if="adsFile.uploaded || adsFile.error"-->
+      <!--            class="mb-3"-->
+      <!--        >-->
+      <!--          <b-card-text-->
+      <!--              v-if="adsFile.error"-->
+      <!--              class="d-flex"-->
+      <!--          >-->
+      <!--            <span class="h4 m-0 text-danger">{{ adsFile.error }}</span>-->
+      <!--          </b-card-text>-->
+      <!--          <b-card-text-->
+      <!--              v-else-if="adsFile.uploaded"-->
+      <!--              class="d-flex align-items-center"-->
+      <!--          >-->
+      <!--            <b-button-->
+      <!--                v-if="!adsFile.play"-->
+      <!--                variant="outline-warning"-->
+      <!--                class="d-block me-3"-->
+      <!--                @click="playAdsFile"-->
+      <!--            >-->
+      <!--              Play-->
+      <!--            </b-button>-->
+      <!--            <b-button-->
+      <!--                v-if="adsFile.play"-->
+      <!--                variant="outline-warning"-->
+      <!--                class="d-block me-3"-->
+      <!--                @click="stopAdsFile"-->
+      <!--            >-->
+      <!--              Stop-->
+      <!--            </b-button>-->
 
+      <!--            <a href="#" class="d-block h4 m-0">{{ adsFile.name }}</a><br>-->
+
+      <!--            <b-button-->
+      <!--                variant="warning"-->
+      <!--                class="d-block ms-auto"-->
+      <!--                @click="deleteAdsFile"-->
+      <!--            >-->
+      <!--              Удалить-->
+      <!--            </b-button>-->
+      <!--          </b-card-text>-->
+      <!--          <b-card-text-->
+      <!--              v-if="adsFile.file && adsFile.file.duration"-->
+      <!--          >-->
+      <!--            <b-progress :max="adsFile.file.duration">-->
+      <!--              <b-progress-bar :value="adsFile.time" :label-html="`<small>${adsFile.time}</small>`"-->
+      <!--                              variant="warning"></b-progress-bar>-->
+      <!--            </b-progress>-->
+      <!--          </b-card-text>-->
+      <!--        </b-card>-->
+      <!--        <b-button-->
+      <!--            type="submit"-->
+      <!--            variant="warning"-->
+      <!--            class="d-block col-12"-->
+      <!--            size="lg"-->
+      <!--            :disabled="adsFile.file===null"-->
+      <!--            @click="onSubmit"-->
+      <!--        >-->
+      <!--          Продолжить-->
+      <!--        </b-button>-->
+      <!--      </template>-->
       <div class="row">
         <label class="form-label text-black"><strong>Регион трансляции</strong></label>
         <b-form-group
@@ -430,6 +493,7 @@ export default {
       urlPath: appSettings.url,
       bearerToken: undefined,
       files: [],
+      showLoaderSending: false,
     };
   },
   computed: {
@@ -476,10 +540,33 @@ export default {
     app.getRegions().then(res => {
       this.regions[0].options = res;
     }).catch(err => {
-      //this.$store.dispatch('showError', err);
+      this.$store.dispatch('showError', err);
       console.error(err);
     });
     this.campaign = this.$store.state.campaign;
+    this.bearerToken = this.$store.state.access;
+    if (this.campaign.ads_file) {
+      this.showModalCampaignNew = true;
+      app.getAdsFile(this.campaign.ads_file).then(res => {
+        Promise.resolve(this.$helpers.getFileInfo(res.file, 'audio')).then((file) => {
+          if (Math.round(file.duration) > 20) {
+            this.adsFile.error = 'Длина ролика превышает 20 сек.';
+            this.adsFile.file = null;
+          } else {
+            this.adsFile.file = file.song;
+            this.adsFile.name = res.name;
+            this.adsFile.uploaded = true;
+            this.adsFile.file.addEventListener('timeupdate', () => {
+              this.adsFile.time = this.adsFile.file.currentTime.toFixed(2);
+              this.adsFile.play = !this.adsFile.file.paused;
+            });
+          }
+        });
+      }).catch(err => {
+        console.error(err);
+        this.$store.dispatch('showError', err);
+      });
+    }
   },
   methods: {
     changeRegion(index, data, childs) {
@@ -569,6 +656,17 @@ export default {
     },
     onSubmit() {
       let errors = false;
+      if (this.campaign.ads_type !== 'audio') {
+        this.showLoaderSending = true;
+        app.sendAdsInfo(this.campaign).then(res => {
+          this.campaign = res;
+          this.next('campaignFinish');
+        }).catch(err => {
+          this.showLoaderSending = false;
+          this.$store.dispatch('showError', err);
+          console.error(err);
+        });
+      }
       if (!this.campaign.campaign_schedule_data[0].campaign_start) {
         errors = true;
         this.campaignStartDateError = false;
@@ -581,6 +679,9 @@ export default {
         errors = true;
         this.selectedRegionsError = false;
       }
+      if (this.adsFile.file === null) {
+        errors = true;
+      }
       if (!errors) {
         this.$store.dispatch('updateCampaign', {campaign: this.campaign});
         this.$store.dispatch('setCampaignStep', {campaign_step: 2});
@@ -590,6 +691,30 @@ export default {
     next() {
       this.$router.push({name: 'campaignPay'});
     },
+    // playAdsFile() {
+    //   this.adsFile.play = true;
+    //   if (this.adsFile.file) {
+    //     this.adsFile.file.play();
+    //   }
+    // },
+    // deleteAdsFile() {
+    //   if (this.campaign.ads_file) {
+    //     this.stopAdsFile();
+    //     app.deleteAdsFile(this.campaign.ads_file).then(() => {
+    //       this.files = [];
+    //       this.adsFile = {
+    //         uploaded: false,
+    //         error: '',
+    //         file: null
+    //       };
+    //       this.campaign.ads_file = null;
+    //       this.$store.dispatch('updateCampaign', {campaign: this.campaign});
+    //     }).catch(err => {
+    //       console.error(err);
+    //       this.$store.dispatch('showError', err);
+    //     });
+    //   }
+    // }
   }
 };
 </script>
