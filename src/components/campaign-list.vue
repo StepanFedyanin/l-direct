@@ -119,7 +119,7 @@
           </div>
         </b-card>
       </div>
-      <div v-if="campaign.ads_type!=='text'&&campaign.ads_type!=='idea'" class="col-12 col-xxl-7">
+      <div v-if="campaign.ads_type=='audio'" class="col-12 col-xxl-7">
         <b-card
             body-class="d-flex flex-column"
             class="campaigns__item-schedule mb-3"

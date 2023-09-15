@@ -4,20 +4,19 @@
         class="form"
         @submit="onSubmit"
     >
-      <file-upload
-          v-if="isCheckAdsType('audio')"
-          v-show="adsFile.file == null"
-          ref="upload"
-          v-model="files"
-          name="file"
-          accept="audio/*"
-          :post-action="`${urlPath}/direct/upload/`"
-          :headers="{'Authorization': `Bearer ${bearerToken}`}"
-          @input-file="selectAdsFile"
-          class="btn btn-lg btn-outline-warning mb-4 w-100"
-      >
-        Загрузить ролик 20 сек
-      </file-upload>
+      <!--      <file-upload-->
+      <!--          v-if="isCheckAdsType('audio')"-->
+      <!--          ref="upload"-->
+      <!--          v-model="files"-->
+      <!--          name="file"-->
+      <!--          accept="audio/*"-->
+      <!--          :post-action="`${urlPath}/direct/upload/`"-->
+      <!--          :headers="{'Authorization': `Bearer ${bearerToken}`}"-->
+      <!--          @input-file="selectAdsFile"-->
+      <!--          class="btn btn-lg btn-outline-warning mb-4 w-100"-->
+      <!--      >-->
+      <!--        Загрузить ролик 20 сек-->
+      <!--      </file-upload>-->
       <!--      <template-->
       <!--          v-if="campaign.ads_type === 'audio'"-->
       <!--      >-->
@@ -82,13 +81,80 @@
       <!--          Продолжить-->
       <!--        </b-button>-->
       <!--      </template>-->
+      <template
+          v-if="isCheckAdsType('audio')"
+      >
+        <label class="form-label text-black"><strong>Аудиоролик</strong></label>
+        <b-card
+            v-if="adsFile.uploaded || adsFile.error"
+            class="mb-3"
+        >
+          <b-card-text
+              v-if="adsFile.error"
+              class="d-flex"
+          >
+            <span class="h4 m-0 text-danger">{{ adsFile.error }}</span>
+          </b-card-text>
+          <b-card-text
+              v-else-if="adsFile.uploaded"
+              class="d-flex align-items-center"
+          >
+            <b-button
+                v-if="!adsFile.play"
+                variant="outline-warning"
+                class="d-block me-3"
+                @click="playAdsFile"
+            >
+              Play
+            </b-button>
+            <b-button
+                v-if="adsFile.play"
+                variant="outline-warning"
+                class="d-block me-3"
+                @click="stopAdsFile"
+            >
+              Stop
+            </b-button>
+
+            <a href="#" class="d-block h4 m-0">{{ adsFile.name }}</a><br>
+
+            <b-button
+                variant="warning"
+                class="d-block ms-auto"
+                @click="deleteAdsFile"
+            >
+              Удалить
+            </b-button>
+          </b-card-text>
+          <b-card-text
+              v-if="adsFile.file && adsFile.file.duration"
+          >
+            <b-progress :max="adsFile.file.duration">
+              <b-progress-bar :value="adsFile.time" :label-html="`<small>${adsFile.time}</small>`"
+                              variant="warning"></b-progress-bar>
+            </b-progress>
+          </b-card-text>
+        </b-card>
+        <file-upload
+            v-show="adsFile.file == null"
+            ref="upload"
+            v-model="files"
+            name="file"
+            accept="audio/*"
+            :post-action="`${urlPath}/direct/upload/`"
+            :headers="{'Authorization': `Bearer ${bearerToken}`}"
+            @input-file="selectAdsFile"
+            class="btn btn-lg btn-outline-warning mb-4 w-100"
+        >
+          Загрузить ролик 20 сек
+        </file-upload>
+      </template>
       <div class="row">
         <label class="form-label text-black"><strong>Регион трансляции</strong></label>
         <b-form-group
             id="select-group-region"
             class="col-12 mt-auto"
         >
-
           <b-form-input
               v-b-toggle="`collapse-region`"
               class="campaign__form-region form-select form-select-lg form-select-collapse"
@@ -177,7 +243,7 @@
         </b-form-group>
 
         <div
-            v-if="campaign.regions.length && isPersonal"
+            v-if="!isCheckAdsType('personal')"
             class="col-12 mb-3"
         >
           <div class="form-control h3">
@@ -498,7 +564,7 @@ export default {
   },
   computed: {
     selectedRegions() {
-      if (this.campaign.regions.length == 0) {
+      if (this.campaign.regions.length === 0) {
         return 'Выберите регионы трансляции';
       } else if (this.campaign.regions.length > 2) {
         return 'Выбрано ' + this.$helpers.stringForNumber(this.campaign.regions.length, ['город', 'города', 'городов']);
@@ -679,7 +745,7 @@ export default {
         errors = true;
         this.selectedRegionsError = false;
       }
-      if (this.adsFile.file === null) {
+      if (!this.adsFile.file) {
         errors = true;
       }
       if (!errors) {
@@ -691,30 +757,36 @@ export default {
     next() {
       this.$router.push({name: 'campaignPay'});
     },
-    // playAdsFile() {
-    //   this.adsFile.play = true;
-    //   if (this.adsFile.file) {
-    //     this.adsFile.file.play();
-    //   }
-    // },
-    // deleteAdsFile() {
-    //   if (this.campaign.ads_file) {
-    //     this.stopAdsFile();
-    //     app.deleteAdsFile(this.campaign.ads_file).then(() => {
-    //       this.files = [];
-    //       this.adsFile = {
-    //         uploaded: false,
-    //         error: '',
-    //         file: null
-    //       };
-    //       this.campaign.ads_file = null;
-    //       this.$store.dispatch('updateCampaign', {campaign: this.campaign});
-    //     }).catch(err => {
-    //       console.error(err);
-    //       this.$store.dispatch('showError', err);
-    //     });
-    //   }
-    // }
+    playAdsFile() {
+      this.adsFile.play = true;
+      if (this.adsFile.file) {
+        this.adsFile.file.play();
+      }
+    },
+    stopAdsFile() {
+      this.adsFile.play = false;
+      if (this.adsFile.file) {
+        this.adsFile.file.pause();
+      }
+    },
+    deleteAdsFile() {
+      if (this.campaign.ads_file) {
+        this.stopAdsFile();
+        app.deleteAdsFile(this.campaign.ads_file).then(() => {
+          this.files = [];
+          this.adsFile = {
+            uploaded: false,
+            error: '',
+            file: null
+          };
+          this.campaign.ads_file = null;
+          this.$store.dispatch('updateCampaign', {campaign: this.campaign});
+        }).catch(err => {
+          console.error(err);
+          this.$store.dispatch('showError', err);
+        });
+      }
+    }
   }
 };
 </script>

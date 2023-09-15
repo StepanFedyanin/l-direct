@@ -87,15 +87,15 @@
         v-if="!disabledControl"
         class="campaign__times-presets pt-1 ps-0 ps-md-4 d-flex flex-wrap"
     >
-      <!--      <b-button-->
-      <!--          v-for="item in presets"-->
-      <!--          :key="`id-${idKey}-${item.name}`"-->
-      <!--          variant="link"-->
-      <!--          :class="preset === item.name ? 'text-warning' : 'text-muted'"-->
-      <!--          @click="setPreset(item.name)"-->
-      <!--      >-->
-      <!--        {{ item.label }}-->
-      <!--      </b-button>-->
+<!--      <b-button-->
+<!--          v-for="item in presets"-->
+<!--          :key="`id-${idKey}-${item.name}`"-->
+<!--          variant="link"-->
+<!--          :class="preset === item.name ? 'text-warning' : 'text-muted'"-->
+<!--          @click="setPreset(item.name)"-->
+<!--      >-->
+<!--        {{ item.label }}-->
+<!--      </b-button>-->
       <b-button
           variant="link"
           class="ms-auto text-muted"
@@ -165,38 +165,34 @@ export default {
   },
   methods: {
     changeHour(index, data) {
-      [index, data]
-      // this.schedule.forEach((element, i) => {
-      //   this.schedule[i][index] = data;
-      // });
-      // if (data === '0') {
-      //   this.weekdays.fill('0');
-      // } else {
-      //   this.checkControl();
-      // }
-      // this.$emit('changeScheduleData', this.schedule);
+      this.schedule.forEach((element, i) => {
+        this.schedule[i][index] = data;
+      });
+      if (data === '0') {
+        this.weekdays.fill('0');
+      } else {
+        this.checkControl();
+      }
+      this.$emit('changeScheduleData', this.schedule);
     },
     changeDay(index, data) {
-      [index, data]
-      // this.schedule[index] = new Array(24).fill(data);
-      // if (data === '0') {
-      //   this.hours.fill('0');
-      // } else {
-      //   this.checkControl();
-      // }
-      // // this.$emit('changeScheduleData', this.schedule);
+      this.schedule[index] = new Array(24).fill(data);
+      if (data === '0') {
+        this.hours.fill('0');
+      } else {
+        this.checkControl();
+      }
+      // this.$emit('changeScheduleData', this.schedule);
     },
     changeCell(row, col, data) {
-      [row,col,data]
-      console.log(row, col, data)
-      // if (data === '0') {
-      //   this.weekdays[row] = '0';
-      //   this.hours[col] = '0';
-      // } else {
-      //   this.checkControl();
-      // }
-      // this.preset = null;
-      // this.$emit('changeScheduleData', this.schedule);
+      if (data === '0') {
+        this.weekdays[row] = '0';
+        this.hours[col] = '0';
+      } else {
+        this.checkControl();
+      }
+      this.preset = null;
+      this.$emit('changeScheduleData', this.schedule);
     },
     checkControl() {
       this.weekdays.forEach((element, i) => {
