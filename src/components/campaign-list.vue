@@ -1,5 +1,10 @@
 <template>
-  <div class="campaigns__list" v-if="campaigns.length>0">
+  <div v-if="!loader" class="w-75 d-flex justify-content-center mt-5">
+    <b-spinner class="text-warning">
+      <span class="visually-hidden ">Loading...</span>
+    </b-spinner>
+  </div>
+  <div class="campaigns__list" v-else-if="campaigns.length>0">
     <div
         v-for="campaign in campaigns"
         :key="campaign.id"
@@ -152,11 +157,15 @@ export default {
     return {
       showLoaderSending: false,
       showLoaderPromocode: false,
+      showLoaderCamping: false
     }
   },
   props: {
     campaigns: {
       type: Array
+    },
+    loader: {
+      type: Boolean,
     }
   },
   methods: {
@@ -176,7 +185,6 @@ export default {
       else return 'Объявление'
     }
   },
-  computed: {
-  }
+  computed: {}
 }
 </script>

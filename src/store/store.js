@@ -14,7 +14,6 @@ const campaignTemplate = () => {
         user_name: '',
         phone: null,
         message: '',
-        idea: '', // можно наверное и использовать message
         regions: [],
         country: 'Россия', // часовой пояс - страна
         timezone: 5, // часовой пояс - город

@@ -6,7 +6,7 @@
       <div class="col-12 col-md-6 col-lg-6 mb-4">
         <b-card
             body-class="d-flex flex-column"
-            :class="campaign.ads_type == 'audio' ? 'is-active' : ''"
+            :class="campaign.ads_type === 'audio' ? 'is-active' : ''"
             class="campaign__ads-item h-100"
             @click="selectAdsType('audio')"
         >
@@ -30,7 +30,7 @@
       <div class="col-12 col-md-6 col-lg-6 mb-4">
         <b-card
             body-class="d-flex flex-column"
-            :class="campaign.ads_type == 'personal' ? 'is-active' : ''"
+            :class="campaign.ads_type === 'personal' ? 'is-active' : ''"
             class="campaign__ads-item h-100"
             @click="selectAdsType('personal')"
         >
@@ -55,7 +55,7 @@
       <div class="col-12 col-md-6 col-lg-6 mb-4">
         <b-card
             body-class="d-flex flex-column"
-            :class="campaign.ads_type == 'text' ? 'is-active' : ''"
+            :class="campaign.ads_type === 'text' ? 'is-active' : ''"
             class="campaign__ads-item h-100"
             @click="selectAdsType('text')"
         >
@@ -80,7 +80,7 @@
       <div class="col-12 col-md-6 col-lg-6 mb-4">
         <b-card
             body-class="d-flex flex-column"
-            :class="campaign.ads_type == 'idea' ? 'is-active' : ''"
+            :class="campaign.ads_type === 'idea' ? 'is-active' : ''"
             class="campaign__ads-item h-100"
             @click="selectAdsType('idea')"
         >
@@ -109,87 +109,72 @@
         class="campaign__ads-form"
     >
 
+<!--      <template-->
+<!--          v-if="campaign.ads_type === 'audio'"-->
+<!--      >-->
+<!--        <b-card-->
+<!--            v-if="adsFile.uploaded || adsFile.error"-->
+<!--            class="mb-3"-->
+<!--        >-->
+<!--          <b-card-text-->
+<!--              v-if="adsFile.error"-->
+<!--              class="d-flex"-->
+<!--          >-->
+<!--            <span class="h4 m-0 text-danger">{{ adsFile.error }}</span>-->
+<!--          </b-card-text>-->
+<!--          <b-card-text-->
+<!--              v-else-if="adsFile.uploaded"-->
+<!--              class="d-flex align-items-center"-->
+<!--          >-->
+<!--            <b-button-->
+<!--                v-if="!adsFile.play"-->
+<!--                variant="outline-warning"-->
+<!--                class="d-block me-3"-->
+<!--                @click="playAdsFile"-->
+<!--            >-->
+<!--              Play-->
+<!--            </b-button>-->
+<!--            <b-button-->
+<!--                v-if="adsFile.play"-->
+<!--                variant="outline-warning"-->
+<!--                class="d-block me-3"-->
+<!--                @click="stopAdsFile"-->
+<!--            >-->
+<!--              Stop-->
+<!--            </b-button>-->
+
+<!--            <a href="#" class="d-block h4 m-0">{{ adsFile.name }}</a><br>-->
+
+<!--            <b-button-->
+<!--                variant="warning"-->
+<!--                class="d-block ms-auto"-->
+<!--                @click="deleteAdsFile"-->
+<!--            >-->
+<!--              Удалить-->
+<!--            </b-button>-->
+<!--          </b-card-text>-->
+<!--          <b-card-text-->
+<!--              v-if="adsFile.file && adsFile.file.duration"-->
+<!--          >-->
+<!--            <b-progress :max="adsFile.file.duration">-->
+<!--              <b-progress-bar :value="adsFile.time" :label-html="`<small>${adsFile.time}</small>`"-->
+<!--                              variant="warning"></b-progress-bar>-->
+<!--            </b-progress>-->
+<!--          </b-card-text>-->
+<!--        </b-card>-->
+<!--        <b-button-->
+<!--            type="submit"-->
+<!--            variant="warning"-->
+<!--            class="d-block col-12"-->
+<!--            size="lg"-->
+<!--            :disabled="adsFile.file===null"-->
+<!--            @click="onSubmit"-->
+<!--        >-->
+<!--          Продолжить-->
+<!--        </b-button>-->
+<!--      </template>-->
       <template
-          v-if="campaign.ads_type === 'audio'"
-      >
-        <b-card
-            v-if="adsFile.uploaded || adsFile.error"
-            class="mb-3"
-        >
-          <b-card-text
-              v-if="adsFile.error"
-              class="d-flex"
-          >
-            <span class="h4 m-0 text-danger">{{ adsFile.error }}</span>
-          </b-card-text>
-          <b-card-text
-              v-else-if="adsFile.uploaded"
-              class="d-flex align-items-center"
-          >
-            <b-button
-                v-if="!adsFile.play"
-                variant="outline-warning"
-                class="d-block me-3"
-                @click="playAdsFile"
-            >
-              Play
-            </b-button>
-            <b-button
-                v-if="adsFile.play"
-                variant="outline-warning"
-                class="d-block me-3"
-                @click="stopAdsFile"
-            >
-              Stop
-            </b-button>
-
-            <a href="#" class="d-block h4 m-0">{{ adsFile.name }}</a><br>
-
-            <b-button
-                variant="warning"
-                class="d-block ms-auto"
-                @click="deleteAdsFile"
-            >
-              Удалить
-            </b-button>
-          </b-card-text>
-          <b-card-text
-              v-if="adsFile.file && adsFile.file.duration"
-          >
-            <b-progress :max="adsFile.file.duration">
-              <b-progress-bar :value="adsFile.time" :label-html="`<small>${adsFile.time}</small>`"
-                              variant="warning"></b-progress-bar>
-            </b-progress>
-          </b-card-text>
-        </b-card>
-        <file-upload
-            v-show="adsFile.file == null"
-            ref="upload"
-            v-model="files"
-            name="file"
-            accept="audio/*"
-            :post-action="`${urlPath}/direct/upload/`"
-            :headers="{'Authorization': `Bearer ${bearerToken}`}"
-            @input-file="selectAdsFile"
-            class="btn btn-lg btn-outline-warning mb-4"
-        >
-          Загрузить ролик 20 сек
-        </file-upload>
-
-        <b-button
-            type="submit"
-            variant="warning"
-            class="d-block col-12"
-            size="lg"
-            :disabled="adsFile.file===null"
-            @click="onSubmit"
-        >
-          Продолжить
-        </b-button>
-      </template>
-
-      <template
-          v-if="campaign.ads_type != null && campaign.ads_type !== 'audio'"
+          v-if="campaign.ads_type != null"
       >
         <b-form
             class="form"
@@ -232,30 +217,16 @@
                   ></b-form-input>
                 </b-form-group>
               </div>
-
               <div class="col-12 col-md-6">
                 <b-form-group
-                    v-if="campaign.ads_type === 'text'"
+                    v-if="campaign.ads_type === 'audio'"
                     id="input-group-message"
                     class="w-100 mt-auto"
-                    label="Ваш текст аудиоролика"
+                    label="Ваши комментарии к рекламной кампании"
                 >
                   <b-form-textarea
                       id="input-message"
                       v-model="campaign.message"
-                      required
-                      size="lg"
-                  ></b-form-textarea>
-                </b-form-group>
-                <b-form-group
-                    v-else-if="campaign.ads_type === 'idea'"
-                    id="input-group-message"
-                    class="w-100 mt-auto"
-                    label="Ваша идея"
-                >
-                  <b-form-textarea
-                      id="input-message"
-                      v-model="campaign.idea"
                       required
                       size="lg"
                   ></b-form-textarea>
@@ -268,7 +239,33 @@
                 >
                   <b-form-textarea
                       id="input-message"
-                      v-model="campaign.idea"
+                      v-model="campaign.message"
+                      required
+                      size="lg"
+                  ></b-form-textarea>
+                </b-form-group>
+                <b-form-group
+                    v-else-if="campaign.ads_type === 'text'"
+                    id="input-group-message"
+                    class="w-100 mt-auto"
+                    label="Ваш текст аудиоролика"
+                >
+                  <b-form-textarea
+                      id="input-message"
+                      v-model="campaign.message"
+                      required
+                      size="lg"
+                  ></b-form-textarea>
+                </b-form-group>
+                <b-form-group
+                    v-else
+                    id="input-group-message"
+                    class="w-100 mt-auto"
+                    label="Ваша идея"
+                >
+                  <b-form-textarea
+                      id="input-message"
+                      v-model="campaign.message"
                       required
                       size="lg"
                   ></b-form-textarea>
@@ -291,7 +288,7 @@
                 class="d-block col-12"
                 size="lg"
             >
-              {{ campaign.ads_type === 'personal' ? 'Продолжить' : 'Отправить' }}
+              Продолжить
             </b-button>
             <b-overlay
                 :show="showLoaderSending"
@@ -315,7 +312,6 @@
 
 <script>
 import {app} from "@/services";
-import {app as appSettings} from "@/settings";
 import CampaignNew from "@/components/campaign-new";
 import Policy from "@/components/policy";
 
@@ -335,19 +331,8 @@ export default {
   },
   data() {
     return {
-      urlPath: appSettings.url,
       showLoaderSending: false,
       campaign: null,
-      files: [],
-      bearerToken: undefined,
-      adsFile: {
-        error: '',
-        uploaded: false,
-        play: false,
-        time: null,
-        file: null,
-        name: null
-      },
       showModalPolicy: false,
       showModalCampaignNew: false,
       showPrice: false
@@ -386,7 +371,7 @@ export default {
         return;
       }
       this.campaign.ads_type = type;
-      this.stopAdsFile();
+      // this.stopAdsFile();
     },
     hideCampaignNew(confirm = false) {
       this.showModalCampaignNew = false;
@@ -425,78 +410,42 @@ export default {
       // } else {
       //   this.$store.dispatch('updateCampaign', {campaign: this.campaign});
       //   this.stopAdsFile();
-        this.next();
+      this.next();
       // }
     },
     next(name) {
       this.$router.push({name: name || 'campaignProps'});
     },
-    selectAdsFile(newFile, oldFile) {
-      this.adsFile.error = '';
-      if (!this.$refs.upload.active && newFile) {
-        let file = newFile.file;
-        Promise.resolve(this.$helpers.getFileInfo(file, 'audio')).then((result) => {
-          //if (result.length) {
-          let file = result;
-          if (Math.round(file.duration) > 20) {
-            this.adsFile.error = 'Длина ролика превышает 20 сек.';
-            this.adsFile.file = null;
-          } else {
-            this.$refs.upload.active = true;
-            this.adsFile.file = file.song;
-            this.adsFile.name = file.file.name;
-            this.adsFile.file.addEventListener('timeupdate', () => {
-              this.adsFile.time = this.adsFile.file.currentTime.toFixed(2);
-              this.adsFile.play = !this.adsFile.file.paused;
-            });
-          }
-          //}
-        });
-      } else {
-        if (newFile && oldFile && !newFile.active && oldFile.active) {
-          if (newFile.xhr) {
-            if (newFile.xhr.status !== 201) {
-              this.adsFile.error = newFile.response.detail || 'Ошибка загрузки файла!';
-              this.adsFile.file = null;
-              this.adsFile.uploaded = false;
-            } else {
-              this.campaign.ads_file = newFile.response.id;
-              this.adsFile.uploaded = true;
-            }
-          }
-        }
-      }
-    },
-    playAdsFile() {
-      this.adsFile.play = true;
-      if (this.adsFile.file) {
-        this.adsFile.file.play();
-      }
-    },
+    // playAdsFile() {
+    //   this.adsFile.play = true;
+    //   if (this.adsFile.file) {
+    //     this.adsFile.file.play();
+    //   }
+    // },
     stopAdsFile() {
       this.adsFile.play = false;
       if (this.adsFile.file) {
         this.adsFile.file.pause();
       }
     },
-    deleteAdsFile() {
-      if (this.campaign.ads_file) {
-        this.stopAdsFile();
-        app.deleteAdsFile(this.campaign.ads_file).then(() => {
-          this.files = [];
-          this.adsFile = {
-            uploaded: false,
-            error: '',
-            file: null
-          };
-          this.campaign.ads_file = null;
-          this.$store.dispatch('updateCampaign', {campaign: this.campaign});
-        }).catch(err => {
-          console.error(err);
-          this.$store.dispatch('showError', err);
-        });
-      }
-    }
+    // deleteAdsFile() {
+    //   if (this.campaign.ads_file) {
+    //     this.stopAdsFile();
+    //     app.deleteAdsFile(this.campaign.ads_file).then(() => {
+    //       this.files = [];
+    //       this.adsFile = {
+    //         uploaded: false,
+    //         error: '',
+    //         file: null
+    //       };
+    //       this.campaign.ads_file = null;
+    //       this.$store.dispatch('updateCampaign', {campaign: this.campaign});
+    //     }).catch(err => {
+    //       console.error(err);
+    //       this.$store.dispatch('showError', err);
+    //     });
+    //   }
+    // }
   }
 };
 </script>

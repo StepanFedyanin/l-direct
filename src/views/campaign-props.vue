@@ -4,6 +4,20 @@
         class="form"
         @submit="onSubmit"
     >
+      <file-upload
+          v-if="isCheckAdsType('audio')"
+          v-show="adsFile.file == null"
+          ref="upload"
+          v-model="files"
+          name="file"
+          accept="audio/*"
+          :post-action="`${urlPath}/direct/upload/`"
+          :headers="{'Authorization': `Bearer ${bearerToken}`}"
+          @input-file="selectAdsFile"
+          class="btn btn-lg btn-outline-warning mb-4 w-100"
+      >
+        Загрузить ролик 20 сек
+      </file-upload>
 
       <div class="row">
         <label class="form-label text-black"><strong>Регион трансляции</strong></label>
@@ -213,103 +227,6 @@
         >
         </b-button>
       </div>
-      <!--
-      <DatePicker
-          v-for="(period, index) in campaign.campaign_schedule_data"
-          :key="`campaign-period-${index}`"
-          v-model="campaign.campaign_schedule_data[index]"
-          mode="date"
-          :masks="masks"
-          :min-date="new Date()"
-          :columns="2"
-          is-range
-      >
-          <template v-slot="{ inputValue, inputEvents }">
-              <div class="row">
-                  <b-form-group
-                      id="date-group-start"
-                      :label="!index ? 'Начало кампании' : ''"
-                      class="col col-sm-5 mt-auto mb-2"
-                  >
-                      <b-form-input
-                          name="campaign_start"
-                          readonly
-                          required
-                          size="lg"
-                          :value="inputValue.start"
-                          v-on="inputEvents.start"
-                      ></b-form-input>
-                  </b-form-group>
-                  <b-form-group
-                      id="date-group-end"
-                      :label="!index ? 'Конец кампании' : ''"
-                      class="col col-sm-5 mt-auto mb-2"
-                  >
-                      <b-form-input
-                          name="campaign_end"
-                          readonly
-                          required
-                          size="lg"
-                          :value="inputValue.end"
-                          v-on="inputEvents.end"
-                      ></b-form-input>
-                  </b-form-group>
-                  <b-button
-                      v-if="index"
-                      class="m--delete"
-                      @click.prevent="deleteCompanyPeriod(index)"
-                  >
-                  </b-button>
-              </div>
-          </template>
-      </DatePicker>
-      -->
-      <!--
-      <div
-          v-for="(period, index) in campaign.campaign_schedule_data"
-          :key="`campaign-period-${index}`"
-          class="row"
-      >
-          <b-form-group
-              id="date-group-start"
-              :label="!index ? 'Начало кампании' : ''"
-              class="col col-sm-5 mt-auto mb-2"
-          >
-              <b-form-input
-                  id="date-start"
-                  v-model="period.campaign_start"
-                  name="campaign_start"
-                  type="date"
-                  :min="this.$helpers.formatDate(new Date(), 'YYYY-MM-DD')"
-                  :max="period.campaign_end"
-                  required
-                  size="lg"
-              ></b-form-input>
-          </b-form-group>
-
-          <b-form-group
-              id="date-group-end"
-              :label="!index ? 'Конец кампании' : ''"
-              class="col col-sm-5 mt-auto mb-2"
-          >
-              <b-form-input
-                  id="date-end"
-                  v-model="period.campaign_end"
-                  name="campaign_end"
-                  type="date"
-                  :min="period.campaign_start || this.$helpers.formatDate(new Date(), 'YYYY-MM-DD')"
-                  required
-                  size="lg"
-              ></b-form-input>
-          </b-form-group>
-          <b-button
-              v-if="index"
-              class="m--delete"
-              @click.prevent="deleteCompanyPeriod(index)"
-          >
-          </b-button>
-      </div>
-      -->
       <div
           v-if="campaign.campaign_schedule"
           class="row"
@@ -383,7 +300,7 @@
           ></b-form-select>
         </b-form-group>
       </div>
-      <template v-if="isPersonal">
+      <template v-if="!isCheckAdsType('personal')">
         <timeTable
             :show="campaign.time_schedule"
             @changeScheduleData="changeScheduleData"
@@ -448,6 +365,7 @@ import {DatePicker} from 'v-calendar';
 import 'v-calendar/dist/style.css';
 import {app} from "@/services";
 import timeTable from '@/components/timeTable';
+import {app as appSettings} from "@/settings";
 
 export default {
   name: 'campaignProps',
@@ -501,6 +419,17 @@ export default {
       campaignStartDateError: null,
       campaignEndDateError: null,
       campaign: null,
+      adsFile: {
+        error: '',
+        uploaded: false,
+        play: false,
+        time: null,
+        file: null,
+        name: null
+      },
+      urlPath: appSettings.url,
+      bearerToken: undefined,
+      files: [],
     };
   },
   computed: {
@@ -537,9 +466,6 @@ export default {
       });
       return price;
     },
-    isPersonal() {
-      return this.campaign.ads_type !== 'personal'
-    },
     totalPrice() {
       const activeTime = this.showTime.filter(time => time.select).length;
       const quantityDays = this.countingDays(this.campaign.campaign_schedule_data);
@@ -571,6 +497,9 @@ export default {
         this.selectedRegionsError = null;
       }
     },
+    isCheckAdsType(value) {
+      return this.campaign.ads_type === value
+    },
     countingDays(days) {
       return days.reduce((total, day) => {
         if (day.campaign_start && day.campaign_end) {
@@ -600,6 +529,42 @@ export default {
     changeCampaignEndDate(day) {
       if (day.id) {
         this.campaignEndDateError = null;
+      }
+    },
+    selectAdsFile(newFile, oldFile) {
+      this.adsFile.error = '';
+      if (!this.$refs.upload.active && newFile) {
+        let file = newFile.file;
+        Promise.resolve(this.$helpers.getFileInfo(file, 'audio')).then((result) => {
+          //if (result.length) {
+          let file = result;
+          if (Math.round(file.duration) > 20) {
+            this.adsFile.error = 'Длина ролика превышает 20 сек.';
+            this.adsFile.file = null;
+          } else {
+            this.$refs.upload.active = true;
+            this.adsFile.file = file.song;
+            this.adsFile.name = file.file.name;
+            this.adsFile.file.addEventListener('timeupdate', () => {
+              this.adsFile.time = this.adsFile.file.currentTime.toFixed(2);
+              this.adsFile.play = !this.adsFile.file.paused;
+            });
+          }
+          //}
+        });
+      } else {
+        if (newFile && oldFile && !newFile.active && oldFile.active) {
+          if (newFile.xhr) {
+            if (newFile.xhr.status !== 201) {
+              this.adsFile.error = newFile.response.detail || 'Ошибка загрузки файла!';
+              this.adsFile.file = null;
+              this.adsFile.uploaded = false;
+            } else {
+              this.campaign.ads_file = newFile.response.id;
+              this.adsFile.uploaded = true;
+            }
+          }
+        }
       }
     },
     onSubmit() {
