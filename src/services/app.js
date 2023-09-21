@@ -60,7 +60,6 @@ export default class extends REST {
         });
     }
 
-    //я меняю тут
     static getUserCampaigns() {
         return this._get(`direct/user_campaign`, {}, {}).then((data) => {
             return data;
@@ -69,8 +68,16 @@ export default class extends REST {
         });
     }
 
-    static getRegions() {
-        return this._get(`direct/locations`, {}, {}).then((data) => {
+    static getUserCampaignsForTypes(id) {
+        return this._get(`direct/user_campaign/by_type/${id}/`, {}, {}).then((data) => {
+            return data;
+        }).catch((error) => {
+            throw new RESTError(error, 'Не удалось получить компании');
+        });
+    }
+
+    static getRegions(type) {
+        return this._get(`direct/locations/by_type/${type}`, {}, {}).then((data) => {
             return data;
         }).catch((error) => {
             throw new RESTError(error, 'Не удалось получить регионы трансляции');
@@ -101,6 +108,16 @@ export default class extends REST {
             throw new RESTError(error, 'Не удалось проверить промокод');
         });
     }
+
+    static getCamaignType(campaign) {
+        let params = Object.assign({}, campaign);
+        return this._get(`direct/camaign_type`, {}, params).then((data) => {
+            return data;
+        }).catch((error) => {
+            throw new RESTError(error, 'Не удалось получить типы компаний');
+        });
+    }
+
 
     static sendAdsInfo(campaign) {
         let params = Object.assign({}, campaign);

@@ -1,0 +1,873 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"fi",
+				"filter"
+			],
+			[
+				"ma",
+				"margin-left"
+			],
+			[
+				"paddin",
+				"padding-left"
+			],
+			[
+				"ho",
+				"home__promo-banner-background"
+			],
+			[
+				"flex",
+				"flex-direction"
+			],
+			[
+				"home",
+				"home__top-banner-text"
+			],
+			[
+				"uplo",
+				"uploaded"
+			],
+			[
+				"co",
+				"complited"
+			],
+			[
+				"po",
+				"pointer"
+			],
+			[
+				"pad",
+				"padding-left"
+			],
+			[
+				"flex-",
+				"flex-wrap"
+			],
+			[
+				"tariffAd",
+				"TariffsAdvancedItem"
+			],
+			[
+				"backgro",
+				"background-repeat: "
+			],
+			[
+				"back",
+				"background: "
+			],
+			[
+				"spa",
+				"space-between"
+			],
+			[
+				"ro",
+				"rooms__included"
+			],
+			[
+				"sel",
+				"align-self: "
+			],
+			[
+				"pa",
+				"padding-bottom"
+			],
+			[
+				"he",
+				"height: "
+			],
+			[
+				"order__ta",
+				"order__info-tabs"
+			],
+			[
+				"for",
+				"form__row"
+			],
+			[
+				"or",
+				"order__rooms"
+			],
+			[
+				"al",
+				"align-items: "
+			],
+			[
+				"t",
+				"tariffs__advanced-item"
+			],
+			[
+				"ta",
+				"tariffs__advanced"
+			],
+			[
+				"border-ra",
+				"border-radius: "
+			],
+			[
+				"r",
+				"room__tariffs"
+			],
+			[
+				"mo",
+				"moreOpened"
+			],
+			[
+				"dis",
+				"display: "
+			],
+			[
+				"tra",
+				"transition: "
+			],
+			[
+				"wid",
+				"width: "
+			],
+			[
+				"pos",
+				"position: "
+			],
+			[
+				"inl",
+				"inline-block"
+			],
+			[
+				"fl",
+				"flex-direction"
+			],
+			[
+				"bor",
+				"border-bottom"
+			],
+			[
+				"o",
+				"opacity: "
+			],
+			[
+				"bac",
+				"background"
+			],
+			[
+				"marg",
+				"margin-left: "
+			],
+			[
+				"con",
+				"contain"
+			],
+			[
+				"ba",
+				"background"
+			],
+			[
+				"no-",
+				"no-repeat"
+			],
+			[
+				"alig",
+				"align-items: "
+			],
+			[
+				"op",
+				"option"
+			],
+			[
+				"margin",
+				"margin-top: "
+			],
+			[
+				"c",
+				"center"
+			],
+			[
+				"align",
+				"align-items: "
+			],
+			[
+				"pro",
+				"profits"
+			],
+			[
+				"va",
+				"variants"
+			],
+			[
+				"wor",
+				"work_time"
+			],
+			[
+				"tot",
+				"total_scheduled_work_time"
+			],
+			[
+				"task",
+				"tasks"
+			],
+			[
+				"to",
+				"total"
+			],
+			[
+				"sch",
+				"scheduled_loss_sum"
+			],
+			[
+				"pare",
+				"parent_id"
+			],
+			[
+				"tas",
+				"tasks"
+			],
+			[
+				"cli",
+				"client_id"
+			],
+			[
+				"u",
+				"undef"
+			],
+			[
+				"clie",
+				"client_id"
+			],
+			[
+				"Cons",
+				"ConstructMessage"
+			],
+			[
+				"e",
+				"employee"
+			],
+			[
+				"log",
+				"login_id"
+			],
+			[
+				"logiN",
+				"login_id"
+			],
+			[
+				"em",
+				"employee"
+			],
+			[
+				"Se",
+				"Security"
+			],
+			[
+				"clien",
+				"client_id"
+			],
+			[
+				"pr",
+				"project_id"
+			],
+			[
+				"_ob",
+				"_object_type"
+			],
+			[
+				"chec",
+				"checks"
+			],
+			[
+				"ch",
+				"checks"
+			],
+			[
+				"wo",
+				"work"
+			],
+			[
+				"Get",
+				"GetEmployee"
+			],
+			[
+				"Em",
+				"Employees"
+			],
+			[
+				"empl",
+				"employee_id"
+			],
+			[
+				"re",
+				"receiver"
+			],
+			[
+				"check",
+				"check_note"
+			],
+			[
+				"_",
+				"_employee_id"
+			],
+			[
+				"valu",
+				"values"
+			],
+			[
+				"def",
+				"default"
+			],
+			[
+				"au",
+				"author"
+			],
+			[
+				"aut",
+				"author_id"
+			],
+			[
+				"che",
+				"check_status"
+			],
+			[
+				"emp",
+				"employee_slack"
+			],
+			[
+				"cha",
+				"changeSelector"
+			],
+			[
+				"er",
+				"errors"
+			],
+			[
+				"para",
+				"Param"
+			],
+			[
+				"text",
+				"textarea"
+			],
+			[
+				"ac",
+				"active"
+			],
+			[
+				"acc",
+				"accepted"
+			],
+			[
+				"ex",
+				"extra_fields"
+			],
+			[
+				"total_",
+				"total_scheduled_time"
+			],
+			[
+				"Pa",
+				"ParseUrl"
+			],
+			[
+				"lo",
+				"lombard"
+			],
+			[
+				"Con",
+				"ConstructUrlStringAstlombard"
+			],
+			[
+				"node",
+				"node_id"
+			],
+			[
+				"base",
+				"base_url"
+			],
+			[
+				"cla",
+				"class_name"
+			],
+			[
+				"st",
+				"status"
+			],
+			[
+				"statu",
+				"statuses"
+			],
+			[
+				"task_",
+				"task_id"
+			],
+			[
+				"_o",
+				"_object_type"
+			],
+			[
+				"request",
+				"request_i"
+			],
+			[
+				"sub",
+				"subvalues"
+			],
+			[
+				"RE",
+				"REQUEST_TASK_NAME"
+			],
+			[
+				"Upd",
+				"UpdateRequest"
+			],
+			[
+				"Re",
+				"Requests"
+			],
+			[
+				"req",
+				"request_id"
+			],
+			[
+				"U",
+				"User"
+			],
+			[
+				"err",
+				"error_text"
+			],
+			[
+				"tota",
+				"total"
+			],
+			[
+				"mon",
+				"month__le"
+			],
+			[
+				"loss",
+				"loss_sum_total"
+			],
+			[
+				"total",
+				"total_profit"
+			],
+			[
+				"mont",
+				"month__ge"
+			],
+			[
+				"month",
+				"months"
+			],
+			[
+				"date",
+				"date_from"
+			],
+			[
+				"work",
+				"works"
+			],
+			[
+				"val",
+				"values"
+			],
+			[
+				"gr",
+				"groups"
+			],
+			[
+				"man",
+				"manual_create"
+			],
+			[
+				"manu",
+				"manual_group_id"
+			],
+			[
+				"MA",
+				"MANUAL_GROUP"
+			],
+			[
+				"ins",
+				"instruction_id"
+			],
+			[
+				"in",
+				"instruction"
+			],
+			[
+				"сл",
+				"следования"
+			],
+			[
+				"topi",
+				"topic_status"
+			],
+			[
+				"topic_",
+				"topic_status"
+			],
+			[
+				"top",
+				"topic_id"
+			],
+			[
+				"person_",
+				"person_id"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 390.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"pack",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: Ins",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 418.0
+	},
+	"console":
+	{
+		"height": 139.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b4428bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/Users/stepa/Downloads/Telegram Desktop"
+	],
+	"file_history":
+	[
+		"/C/Users/stepa/Downloads/Telegram Desktop/l-direct.sublime-project",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/views/offer.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/views/privacy.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/views/alerts.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/views/pay.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/views/reports.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/views/profile.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/assets/css/modules/contacts.scss",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/assets/css/modules/home.scss",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/views/home.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/views/home.old.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/views/campaigns.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/views/campaign-props.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/components/offer.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/components/privacy.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/components/contract.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/components/campaign-new.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/components/policy.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/components/app-error.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/views/campaign.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/assets/css/common.scss",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/package.json",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/components/sideBar.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/views/campaign-finish.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/views/campaign-pay.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/assets/css/main.scss",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/assets/css/settings.scss",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/components/timeTable.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/router/router.js",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/components/campaignSteps.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/store/store.js",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/settings/index.js",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/assets/css/modules/app.scss",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/assets/css/modules/sidebar.scss",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/assets/css/modules/profile.scss",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/assets/css/modules/auth.scss",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/utils/ajax.js",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/services/rest.js",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/settings/production.js",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/settings/development.js",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/services/app.js",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/components/topBar.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/views/campaign-ads.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/assets/css/modules/campaign.scss",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/utils/helpers.js",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/App.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/public/index.html",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/main.js",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/views/auth.vue",
+		"/C/Users/stepa/Downloads/Telegram Desktop/client/src/assets/css/modules/campaigns.scss",
+		"/E/projects/l-direct/mail/manager_campaign.html",
+		"/E/projects/l-direct/client/src/assets/css/modules/multiselect.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/core/foundation/_variables.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/core/modifiers/_ttb.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/core/modifiers/_fade.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/core/modifiers/_draggable.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/core/objects/_track.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/core/objects/_list.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/core/splide-core.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/default/modifiers/_ttb.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/default/modifiers/_rtl.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/default/modifiers/_nav.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/default/objects/_pagination.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/default/foundation/_variables.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/default/splide-default.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/splide.pcss",
+		"/E/projects/l-direct/client/src/assets/css/main.pcss",
+		"/E/projects/l-direct/client/src/assets/css/common.pcss",
+		"/E/projects/l-direct/client/src/assets/css/mixins/responsive.pcss",
+		"/E/projects/l-direct/client/src/assets/css/settings.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/form.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/v-calendar.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/specials.pcss",
+		"/E/projects/l-direct/client/src/assets/css/mixins/text.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/tariffs.pcss",
+		"/E/projects/l-direct/client/src/components/order-rooms.vue",
+		"/E/projects/l-direct/client/src/components/order-guests-item.vue",
+		"/E/projects/l-direct/client/src/assets/css/modules/order.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/rooms.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/basket.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/app.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/room.pcss",
+		"/E/projects/l-direct/client/src/components/rooms-item-info.vue",
+		"/E/projects/l-direct/client/src/components/basket-block.vue",
+		"/E/projects/l-direct/client/src/components/header.vue",
+		"/E/projects/l-direct/client/src/components/tariffs-specials-item.vue",
+		"/E/projects/l-direct/client/src/components/tariffs-advanced-item.vue",
+		"/E/projects/l-direct/client/src/components/tariffs-item.vue",
+		"/E/projects/l-direct/client/src/components/rooms-item.vue",
+		"/E/projects/l-direct/client/src/views/order.vue",
+		"/E/projects/l-direct/client/src/views/tariffs.vue",
+		"/E/projects/l-direct/client/src_bak/main.js",
+		"/E/projects/l-direct/client/src/assets/css/mixins/form.pcss",
+		"/E/projects/l-direct/client/src/assets/css/mixins/gradient.pcss",
+		"/E/projects/l-direct/client/src/assets/css/mixins/index.pcss",
+		"/E/projects/l-direct/client/src/views/rooms.vue",
+		"/E/projects/l-direct/client/src/assets/css/lib/fonts.css",
+		"/E/projects/l-direct/client/src/main.js",
+		"/E/projects/l-direct/client/src/store/store.js",
+		"/E/projects/l-direct/client/src/router/router.js",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/default/objects/_arrow.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/core/objects/_root.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/foundation/_variables.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/object/_nav.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/object/_rtl.pcss",
+		"/E/projects/l-direct/client/src/assets/css/modules/splide/object/_ttb.pcss",
+		"/E/flexites3/projects/support/controllers/employee/employees/ratings.pm",
+		"/E/flexites3/projects/support/templates/xslate/mail/task_change.tx",
+		"/E/flexites3/projects/support/templates/xslate/mail/files_change.tx",
+		"/E/flexites3/projects/support/templates/xslate/slack/files_change.tx",
+		"/E/flexites3/projects/support/templates/xslate/mail/task_status.tx",
+		"/E/flexites3/projects/support/templates/xslate/slack/task_change.tx",
+		"/E/flexites3/projects/support/actions/json.pm",
+		"/E/flexites3/projects/support/handlers/Support/Employee.pm",
+		"/E/flexites3/projects/support/templates/xslate/includes/head_dev.tx",
+		"/E/flexites3/projects/support/templates/xslate/__support__.tx",
+		"/E/flexites3/projects/support/templates/xslate/employee/includes/task_table.tx",
+		"/E/flexites3/projects/support/templates/xslate/employee/economy/hosting.tx",
+		"/E/flexites3/projects/support/templates/xslate/employee/economy/finances.tx",
+		"/E/flexites3/projects/support/templates/xslate/employee/economy/profits.tx",
+		"/E/flexites3/projects/support/templates/xslate/employee/economy/losses.tx",
+		"/E/flexites3/projects/support/controllers/employee/economy/losses.pm",
+		"/E/flexites3/projects/support/lib/Hook/Losses.pm",
+		"/E/flexites3/projects/support/lib/Database/Tasks.pm",
+		"/E/flexites3/projects/support/controllers/employee/reports/managers_profits.pm",
+		"/E/flexites3/projects/support/js/proj/form.new.js",
+		"/E/flexites3/projects/support/controllers/employee.pm",
+		"/E/flexites3/projects/support/css/less/interfaces.less"
+	],
+	"find":
+	{
+		"height": 42.4
+	},
+	"find_in_files":
+	{
+		"height": 104.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"30",
+			"calendarConfig",
+			"person",
+			"index",
+			"showloader",
+			"form",
+			"uL",
+			"store",
+			"response",
+			"map",
+			"changeScheduleData",
+			"schedule[index]",
+			"stopAdsFile",
+			"deleteAdsFile",
+			"form.",
+			"refItem",
+			"arrowPosX",
+			"refItem",
+			"moreInfo",
+			"/assets/",
+			"assets/",
+			"url('",
+			"gold",
+			"darkgrad"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"showLoader",
+			"./assets/",
+			"/assets/",
+			"url('assets/fonts/"
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 29.6
+	},
+	"input":
+	{
+		"height": 44.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.SublimeLinter":
+	{
+		"height": 0.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.gulp_output":
+	{
+		"height": 196.0
+	},
+	"pinned_build_system": "Packages/LESS-build/LESS.sublime-build",
+	"project": "l-direct.sublime-project",
+	"replace":
+	{
+		"height": 56.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"E:\\flexites3\\projects\\support\\support.sublime-project"
+			],
+			[
+				"t",
+				"E:\\projects\\tugan\\tugan.sublime-project"
+			],
+			[
+				"fian",
+				"E:\\projects\\fianit-help\\client\\fianit-help.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 315.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

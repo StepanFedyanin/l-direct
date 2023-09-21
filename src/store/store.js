@@ -1,4 +1,4 @@
-import { createStore } from 'vuex';
+import {createStore} from 'vuex';
 import VuexPersist from 'vuex-persist'
 
 const vuexPersist = new VuexPersist({
@@ -6,9 +6,31 @@ const vuexPersist = new VuexPersist({
     storage: window.localStorage
 });
 
+// 'ads_type': null,
+//     'ads_file': null,
+//     'ads_id': null,
+//     'person': null,
+//     'user_name': '',
+//     'phone': null,
+//     'message': '',
+//     'regions': [],
+//     'country': 'Россия',
+//     'timezone': 5,
+//     'campaign_schedule': false,
+//     'campaign_schedule_data': [{}],
+//     'time_schedule': true,
+//     'time_period_type': 'Ежедневно',
+//     'time_period_start': '00:00',
+//     'time_period_end': '20:00',
+//     'time_schedule_data': [[]],
+//     'notification_email': '',
+//     'notification_moderate': true,
+//     'notification_campaign_end': true,
+//     'promocode': null,
 const campaignTemplate = () => {
     return {
         ads_type: null,
+        ads_type_str:null,
         ads_file: null,
         person: null,
         user_name: '',
@@ -23,11 +45,14 @@ const campaignTemplate = () => {
         time_period_type: 'Ежедневно',
         time_period_start: '00:00',
         time_period_end: '20:00',
-        time_schedule_data: [[]], //  7 массивов, по 24 элемена в кажом (0 или 1)
+        time_schedule_data: [], //  7 массивов, по 24 элемена в кажом (0 или 1)
         notification_email: '',
         notification_moderate: true,
         notification_campaign_end: true,
         promocode: null,
+        status:null,
+        cost_campaign:null,
+        count_view:null
     }
 };
 

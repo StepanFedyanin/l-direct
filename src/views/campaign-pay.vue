@@ -11,7 +11,7 @@
         <div
             class="h2 text-uppercase m-0 text-black"
         >
-          <strong>{{ amount.amount_total }} ₽</strong>
+          <strong>{{ campaign.cost_campaign }} ₽</strong>
         </div>
       </b-card>
     </div>
@@ -168,7 +168,7 @@ export default {
       this.campaign.notification_email = this.$store.state.user.email;
     }
     this.$nextTick(() => {
-      this.getAmount()
+      // this.getAmount()
       this.checkPromo(this.campaign.promo_code)
     });
   },
@@ -200,17 +200,17 @@ export default {
     next() {
       this.$router.push({name: 'campaignFinish', params: {completed: true}});
     },
-    getAmount() {
-      this.showLoaderSending = true;
-      app.amountCampaign(this.campaign).then(res => {
-        this.showLoaderSending = false;
-        this.amount = res;
-      }).catch(err => {
-        this.showLoaderSending = false;
-        this.$store.dispatch('showError', err);
-        console.error(err);
-      });
-    },
+    // getAmount() {
+    //   this.showLoaderSending = true;
+    //   app.amountCampaign(this.campaign).then(res => {
+    //     this.showLoaderSending = false;
+    //     this.amount = res;
+    //   }).catch(err => {
+    //     this.showLoaderSending = false;
+    //     this.$store.dispatch('showError', err);
+    //     console.error(err);
+    //   });
+    // },
     checkPromo(code) {
       if (code) {
         app.checkPromocode(code).then(res => {

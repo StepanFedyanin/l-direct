@@ -10,7 +10,15 @@ const helpers = {
     formatDate: (value, template) => {
         return format(value, template);
     },
-
+    deleteKeyObj(obj,keyObj){
+       let newObj = {}
+        for (let key in obj) {
+            if (key!==keyObj){
+                newObj[key] = obj[key];
+            }
+        }
+        return newObj;
+    },
     stringForNumber: (value, strings) => {
         let idx = 2;
         let num = value;

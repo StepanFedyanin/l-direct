@@ -102,6 +102,9 @@
 					}
 				}
 			}
+			.btn-check[disabled] + .btn-outline-warning {
+				background: $color-lightgray;
+			}
 			.form-check-input {
 				margin-left: -1em;
 			}
