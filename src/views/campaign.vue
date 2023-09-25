@@ -48,7 +48,7 @@
         },
         data() {
             return {
-                step: null,
+                step: 1,
             };
         },
         computed: {

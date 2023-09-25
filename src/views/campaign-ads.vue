@@ -88,7 +88,7 @@
                             <b-form-group
                                 id="input-group-message"
                                 class="w-100 mt-auto"
-                                :label="type.making_price||'Ваш комментарий'"
+                                :label="type.details||'Ваш комментарий'"
                             >
                                 <b-form-textarea
                                     id="input-message"
@@ -173,14 +173,16 @@ export default {
             showPrice: false,
             camaignTypes: [],
             showLoaderSending: false,
-            showLoaderType:false
+            showLoaderType: false
         };
     },
     created() {
-        this.$store.dispatch('clearCampaign');
         this.campaign = this.$store.state.campaign;
         this.bearerToken = this.$store.state.access;
         this.showLoaderType = true;
+        if (Number(this.campaign.cost_campaign) || this.campaign.cost_campaign === 0) {
+            this.showModalCampaignNew = true;
+        }
         app.getCamaignType().then(res => {
             this.camaignTypes = res;
             this.showLoaderType = false
@@ -198,16 +200,26 @@ export default {
         hideCampaignNew(confirm = false) {
             this.showModalCampaignNew = false;
             if (confirm) {
-                this.adsFile = {
-                    error: '',
-                    uploaded: false,
-                    play: false,
-                    time: null,
-                    file: null,
-                    name: null
-                };
+                this.$store.dispatch('clearCampaign');
+            } else {
+                this.campaign = this.$store.state.campaign;
+                let nextViews = ''
+                switch (this.campaign.step) {
+                    case 1:
+                        nextViews = 'campaignAds'
+                        break;
+                    case 2:
+                        nextViews = 'campaignProps'
+                        break;
+                    case 3:
+                        nextViews = 'campaignPay'
+                        break;
+                    case 4:
+                        nextViews = 'campaignFinish'
+                        break;
+                }
+                this.next(nextViews);
             }
-            this.campaign = this.$store.state.campaign;
         },
         showPolicy() {
             this.showModalPolicy = true;
@@ -221,18 +233,21 @@ export default {
         onSubmit() {
             if (this.checkIsNextStep()) {
                 this.showLoaderSending = true;
-                app.sendAdsInfo(this.$helpers.deleteKeyObj({...this.campaign, status: 1}, 'ads_type_str')).then(res => {
+                app.sendAdsInfo(this.$helpers.deleteKeyObj({
+                    ...this.campaign,
+                    status: 1,
+                    step: 2
+                }, ['ads_type_str', 'step'])).then(res => {
                     this.campaign = res;
                 }).catch(err => {
                     this.showLoaderSending = false;
                     this.$store.dispatch('showError', err);
-                    console.error(err);
                 }).finally(() => {
                     this.showLoaderSending = false;
                 })
             } else {
                 this.$store.dispatch('setCampaignStep', {campaign_step: 3});
-                this.$store.dispatch('updateCampaign', {campaign: {...this.campaign, status: 3}});
+                this.$store.dispatch('updateCampaign', {campaign: {...this.campaign, status: 3, step: 2}});
                 this.next();
             }
         },

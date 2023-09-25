@@ -22,7 +22,8 @@
                     <div class="campaigns__item-content">
                         <p>{{ campaign.message }}</p>
                     </div>
-                    <div v-if="campaign.ads_type==='audio'||campaign.ads_type==='personal'" class="campaigns__item-content">
+                    <div v-if="campaign.ads_type?.type==='audio'||campaign.ads_type?.type==='personal'"
+                         class="campaigns__item-content">
                         <div
                             v-if="campaign.campaign_schedule_data[0]?.campaign_start&&campaign.campaign_schedule_data[0]?.campaign_end"
                             class="campaigns__item-content-block">
@@ -41,7 +42,8 @@
                             <p><span>Время показов:</span> {{ this.getShowTime(campaign.time_schedule_data) }}</p>
                         </div>
                         <div class="campaigns__item-content-block">
-                            <p><span>Стоимость показов:</span> {{ campaign.cost_campaign }} ₽ (выходов рекламы: {{campaign.count_view}} )</p>
+                            <p><span>Стоимость показов:</span> {{ campaign.cost_campaign }} ₽ (выходов рекламы:
+                                {{ campaign.count_view }} )</p>
                         </div>
                     </div>
                     <!--                    <div v-if="campaign.status===2" class="campaigns__item-content">-->
@@ -160,7 +162,7 @@
             variant="warning"
             @click="$router.push({ name: 'campaign' })"
         >
-            создать компанию
+            создать кампанию
         </b-button>
     </div>
 </template>
@@ -197,8 +199,8 @@ export default {
             }).join(', ')
 
         },
-        getShowTime(array){
-            return array.map(item=>{
+        getShowTime(array) {
+            return array.map(item => {
                 return item.name
             }).join(', ')
         },
@@ -206,9 +208,9 @@ export default {
 
         },
         getTypeCampaign(campaign) {
-            if (campaign.ads_type === "audio") return "Аудио"
-            if (campaign.ads_type === "text") return "Текст"
-            if (campaign.ads_type === "idea") return "Идея"
+            if (campaign.ads_type?.type === "audio") return "Аудио"
+            if (campaign.ads_type?.type === "text") return "Текст"
+            if (campaign.ads_type?.type === "idea") return "Идея"
             else return 'Объявление'
         }
     },

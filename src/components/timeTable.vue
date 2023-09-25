@@ -132,7 +132,7 @@ export default {
         }
     },
     created() {
-        if (this.schedule.length === 1) {
+        if (this.scheduleData.length === 1) {
             this.setPreset('clear');
         } else {
             this.checkControl();
@@ -168,9 +168,9 @@ export default {
         changeHour(index, data) {
             this.schedule.forEach((element, i) => {
                 if (i === 5 || i === 6) {
-                    this.schedule[i][index] = this.disabledTime('Вс', index) ? '0' : '1';
+                    this.schedule[i][index] = this.disabledTime('Вс', index) ? '0' : data;
                 } else {
-                    this.schedule[i][index] = this.disabledTime('', index) ? '0' : '1';
+                    this.schedule[i][index] = this.disabledTime('', index) ? '0' : data;
                 }
             });
             if (data === '0') {

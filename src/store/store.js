@@ -52,7 +52,8 @@ const campaignTemplate = () => {
         promocode: null,
         status:null,
         cost_campaign:null,
-        count_view:null
+        count_view:null,
+        step:1
     }
 };
 

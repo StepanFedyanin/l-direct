@@ -255,6 +255,7 @@
 
             <template v-if="!isCheckAdsType('personal')">
                 <timeTable
+                    :schedule-data="campaign.time_schedule_data"
                     :show="campaign.time_schedule"
                     @changeScheduleData="changeScheduleData"
                     v-if="campaign.time_schedule"
@@ -271,6 +272,7 @@
                             :options="typePeriod"
                             required
                             size="lg"
+                            @change="totalPrice"
                         ></b-form-select>
                     </b-form-group>
 
@@ -284,6 +286,7 @@
                             :options="timePeriod"
                             required
                             size="lg"
+                            @change="totalPrice"
                         ></b-form-select>
                     </b-form-group>
 
@@ -297,6 +300,7 @@
                             :options="timePeriod"
                             required
                             size="lg"
+                            @change="totalPrice"
                         ></b-form-select>
                     </b-form-group>
                 </div>
@@ -457,7 +461,6 @@ export default {
         this.getRegions();
         this.bearerToken = this.$store.state.access;
         if (this.campaign.ads_file) {
-            this.showModalCampaignNew = true;
             app.getAdsFile(this.campaign.ads_file).then(res => {
                 Promise.resolve(this.$helpers.getFileInfo(res.file, 'audio')).then((file) => {
                     if (Math.round(file.duration) > 20) {
@@ -483,11 +486,16 @@ export default {
         totalPrice() {
             let total = 0;
             let countView = 0;
+            console.log(this.campaign.time_schedule)
             const quantityDays = this.countingDays(this.campaign.campaign_schedule_data, this.campaign.time_period_type);
             if (this.campaign.ads_type_str === 'audio') {
-                const countingTime = this.countingTime(this.campaign.time_period_start, this.campaign.time_period_end);
-                countView = countingTime * quantityDays;
-                total = this.airingPrice * countingTime * quantityDays;
+                if (this.campaign.time_schedule) {
+                    total = this.airingPrice * quantityDays;
+                } else {
+                    const countingTime = this.countingTime(this.campaign.time_period_start, this.campaign.time_period_end);
+                    countView = countingTime * quantityDays;
+                    total = this.airingPrice * countingTime * quantityDays;
+                }
             } else {
                 const activeTime = this.showTime.filter(time => time.select).length;
                 countView = activeTime * quantityDays
@@ -495,6 +503,7 @@ export default {
             }
             this.campaign.cost_campaign = total;
             this.campaign.count_view = countView;
+            this.updateStore();
             return total;
         },
         getRegions() {
@@ -511,6 +520,7 @@ export default {
             } else {
                 this.campaign.regions = [...this.campaign.regions].filter(index => index !== Number(id));
             }
+            this.totalPrice();
         },
         changeActiveTime(event, data) {
             if (event) {
@@ -518,6 +528,7 @@ export default {
             } else {
                 this.campaign.time_schedule_data.filter(day => day.id !== data.id)
             }
+            this.updateStore();
         },
         isCheckAdsType(value) {
             return this.campaign.ads_type_str === value
@@ -573,8 +584,8 @@ export default {
             this.campaign.campaign_schedule_data.splice(index, 1);
         },
         changeScheduleData(time_schedule_data) {
-            console.log(time_schedule_data)
             this.campaign.time_schedule_data = time_schedule_data;
+            this.totalPrice();
         },
         changeCampaignStartDate(day) {
             if (day.id) {
@@ -631,12 +642,7 @@ export default {
             if (!this.adsFile.file && this.campaign.ads_type_str === 'audio') {
                 errors = true;
             }
-            this.$store.dispatch('updateCampaign', {
-                campaign: {
-                    ...this.campaign,
-                    status: 3
-                }
-            });
+            this.updateStore({...this.campaign, step: 3});
             if (!errors) {
                 this.showLoaderSending = true;
                 app.sendAdsInfo(this.$helpers.deleteKeyObj(this.campaign, 'ads_type_str')).then(res => {
@@ -677,16 +683,15 @@ export default {
                         file: null
                     };
                     this.campaign.ads_file = null;
-                    this.$store.dispatch('updateCampaign', {campaign: this.campaign});
+                    this.updateStore();
                 }).catch(err => {
                     console.error(err);
                     this.$store.dispatch('showError', err);
                 });
             }
         },
-        checkDataDelitThem(value) {
-            console.log(this.campaign.regions.includes(Number(value)), 'чек');
-            return true;
+        updateStore(params) {
+            this.$store.dispatch('updateCampaign', {campaign: params || this.campaign});
         }
     }
 };

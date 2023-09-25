@@ -43,7 +43,7 @@ export default {
                 label: 'Все кампании',
                 show: true,
             }, {
-                name: 5,
+                name: 10,
                 label: 'Аудиоролики',
                 show: true,
             }, {
