@@ -100,8 +100,8 @@
                             >
                                 <b-form-checkbox
                                     name="regions"
+                                    v-model="campaign.regions"
                                     :value="region.id"
-                                    @change="changeRegion(region.id, $event)"
                                 >
                                     {{ region.region }}
                                 </b-form-checkbox>
@@ -259,51 +259,55 @@
                     :show="campaign.time_schedule"
                     @changeScheduleData="changeScheduleData"
                     v-if="campaign.time_schedule"
+                    :disabledDay="disabledDay"
                 />
-                <div v-else class="row">
-                    <b-form-group
-                        id="select-group-period"
-                        class="col-12 col-sm-6 mt-auto"
-                        label="Показывать объявления"
-                    >
-                        <b-form-select
-                            id="select-period"
-                            v-model="campaign.time_period_type"
-                            :options="typePeriod"
-                            required
-                            size="lg"
-                            @change="totalPrice"
-                        ></b-form-select>
-                    </b-form-group>
+                <template v-else>
+                    <label class="form-label text-black"><strong>Настройка показов</strong></label>
+                    <div class="row">
+                        <div
+                            v-for="activeDay in gettingActiveDays()"
+                            :key="activeDay.type+Date.now()"
+                            class="row"
+                        >
+                            <b-form-group
+                                id="select-group-period"
+                                class="col-12 col-sm-6 mt-auto"
+                            >
+                                <div class="form-control">
+                                    {{ activeDay.type }}
+                                </div>
+                            </b-form-group>
 
-                    <b-form-group
-                        id="select-group-period-start"
-                        class="col-6 col-sm-3 mt-auto"
-                    >
-                        <b-form-select
-                            id="select-period-start"
-                            v-model="campaign.time_period_start"
-                            :options="timePeriod"
-                            required
-                            size="lg"
-                            @change="totalPrice"
-                        ></b-form-select>
-                    </b-form-group>
+                            <b-form-group
+                                id="select-group-period-start"
+                                class="col-6 col-sm-3 mt-auto"
+                            >
+                                <b-form-select
+                                    id="select-period-start"
+                                    v-model="campaign.time_period_start"
+                                    :options="activeDay.time"
+                                    required
+                                    size="lg"
+                                    @change="totalPrice"
+                                ></b-form-select>
+                            </b-form-group>
 
-                    <b-form-group
-                        id="select-group-period-end"
-                        class="col-6 col-sm-3 mt-auto"
-                    >
-                        <b-form-select
-                            id="select-period-end"
-                            v-model="campaign.time_period_end"
-                            :options="timePeriod"
-                            required
-                            size="lg"
-                            @change="totalPrice"
-                        ></b-form-select>
-                    </b-form-group>
-                </div>
+                            <b-form-group
+                                id="select-group-period-end"
+                                class="col-6 col-sm-3 mt-auto"
+                            >
+                                <b-form-select
+                                    id="select-period-end"
+                                    v-model="campaign.time_period_end"
+                                    :options="activeDay.time"
+                                    required
+                                    size="lg"
+                                    @change="totalPrice"
+                                ></b-form-select>
+                            </b-form-group>
+                        </div>
+                    </div>
+                </template>
                 <div class="row mb-3">
                     <div class="col-12">
                         <b-form-checkbox
@@ -327,8 +331,8 @@
                         >
                             <b-form-checkbox
                                 class="col-6"
-                                v-model="day.select"
-                                @change="changeActiveTime($event,day)"
+                                :value="day.id"
+                                v-model="campaign.time_schedule_data"
                             >
                                 {{ day.name }}
                             </b-form-checkbox>
@@ -407,9 +411,21 @@ export default {
             ],
             regions: [],
             showTime: [
-                {id: 'morning', name: 'Утро', value: '8:00', select: false},
-                {id: 'daytime', name: 'День', value: '12:00', select: false},
-                {id: 'evening', name: 'Вечер', value: '17:00', select: false}
+                {
+                    id: 'morning',
+                    name: 'Утро',
+                    value: '8:00',
+                },
+                {
+                    id: 'daytime',
+                    name: 'День',
+                    value: '12:00',
+                },
+                {
+                    id: 'evening',
+                    name: 'Вечер',
+                    value: '17:00',
+                }
             ],
             selectedRegionsError: null,
             campaignStartDateError: null,
@@ -427,6 +443,7 @@ export default {
             bearerToken: undefined,
             files: [],
             showLoaderSending: false,
+            disabledDay: []
         };
     },
     computed: {
@@ -442,7 +459,7 @@ export default {
             let idx = this.campaign.regions.map(id => {
                 return this.regions.map(item => {
                     return item.id;
-                }).indexOf(String(id));
+                }).indexOf(id);
             });
             idx.forEach(id => {
                 if (this.regions[id]) {
@@ -451,15 +468,12 @@ export default {
             });
             return price;
         },
-
     },
     created() {
-        this.campaign = {
-            ...this.$store.state.campaign,
-            time_schedule_data: this.$store.state.campaign.ads_type_str === 'audio' ? [[]] : []
-        };
-        this.getRegions();
+        this.campaign = this.$store.state.campaign;
         this.bearerToken = this.$store.state.access;
+        this.getRegions();
+        this.gettingActiveDays(true);
         if (this.campaign.ads_file) {
             app.getAdsFile(this.campaign.ads_file).then(res => {
                 Promise.resolve(this.$helpers.getFileInfo(res.file, 'audio')).then((file) => {
@@ -486,18 +500,13 @@ export default {
         totalPrice() {
             let total = 0;
             let countView = 0;
-            console.log(this.campaign.time_schedule)
             const quantityDays = this.countingDays(this.campaign.campaign_schedule_data, this.campaign.time_period_type);
             if (this.campaign.ads_type_str === 'audio') {
-                if (this.campaign.time_schedule) {
-                    total = this.airingPrice * quantityDays;
-                } else {
-                    const countingTime = this.countingTime(this.campaign.time_period_start, this.campaign.time_period_end);
-                    countView = countingTime * quantityDays;
-                    total = this.airingPrice * countingTime * quantityDays;
-                }
+                const countingTime = this.countingTime(this.campaign.time_schedule, this.campaign.time_schedule_data, this.campaign.time_period_end);
+                countView = countingTime * quantityDays;
+                total = this.airingPrice * quantityDays * countingTime;
             } else {
-                const activeTime = this.showTime.filter(time => time.select).length;
+                const activeTime = this.campaign.time_schedule_data.length;
                 countView = activeTime * quantityDays
                 total = this.airingPrice * activeTime * quantityDays
             }
@@ -513,22 +522,6 @@ export default {
                 this.$store.dispatch('showError', err);
                 console.error(err);
             });
-        },
-        changeRegion(id, data) {
-            if (data) {
-                this.campaign.regions.push(Number(id));
-            } else {
-                this.campaign.regions = [...this.campaign.regions].filter(index => index !== Number(id));
-            }
-            this.totalPrice();
-        },
-        changeActiveTime(event, data) {
-            if (event) {
-                this.campaign.time_schedule_data.push(data)
-            } else {
-                this.campaign.time_schedule_data.filter(day => day.id !== data.id)
-            }
-            this.updateStore();
         },
         isCheckAdsType(value) {
             return this.campaign.ads_type_str === value
@@ -571,17 +564,31 @@ export default {
                 }, 0);
             }
         },
-        countingTime(timeStart, timeEnd) {
-            const start = new Date(`2004-1-1 ${timeStart}`).getHours();
-            const end = new Date(`2004-1-1 ${timeEnd}`).getHours();
-            if (start >= end) return 0;
-            return end - start;
+        countingTime(isTable, data, timeTable) {
+            if (isTable) {
+                let count = 0;
+                for (let i = 0; i < data.length; i++) {
+                    for (let j = 0; j < data[i].length; j++) {
+                        if (data[i][j] === '1') {
+                            count++;
+                        }
+                    }
+                }
+                return count;
+            }
+            if (timeTable) {
+                const start = new Date(`2004-1-1 ${data.timeStart}`).getHours();
+                const end = new Date(`2004-1-1 ${data.timeEnd}`).getHours();
+                if (start >= end) return 0;
+                return end - start;
+            }
         },
         addCompanyPeriod() {
             this.campaign.campaign_schedule_data.push({});
         },
         deleteCompanyPeriod(index) {
             this.campaign.campaign_schedule_data.splice(index, 1);
+            this.gettingActiveDays(true);
         },
         changeScheduleData(time_schedule_data) {
             this.campaign.time_schedule_data = time_schedule_data;
@@ -591,11 +598,15 @@ export default {
             if (day.id) {
                 this.campaignStartDateError = null;
             }
+            this.updateStore();
+            this.gettingActiveDays(true);
         },
         changeCampaignEndDate(day) {
             if (day.id) {
                 this.campaignEndDateError = null;
             }
+            this.updateStore();
+            this.gettingActiveDays(true);
         },
         selectAdsFile(newFile, oldFile) {
             this.adsFile.error = '';
@@ -644,15 +655,8 @@ export default {
             }
             this.updateStore({...this.campaign, step: 3});
             if (!errors) {
-                this.showLoaderSending = true;
-                app.sendAdsInfo(this.$helpers.deleteKeyObj(this.campaign, 'ads_type_str')).then(res => {
-                    this.campaign = res;
-                    this.next('campaignFinish');
-                }).catch(err => {
-                    this.showLoaderSending = false;
-                    this.$store.dispatch('showError', err);
-                    console.error(err);
-                });
+                // this.showLoaderSending = true;
+                this.$store.dispatch('updateCampaign', {campaign: this.campaign});
                 this.$store.dispatch('setCampaignStep', {campaign_step: 2});
                 this.next();
             }
@@ -689,6 +693,34 @@ export default {
                     this.$store.dispatch('showError', err);
                 });
             }
+        },
+        gettingActiveDays(getFullDay = false) {
+            const daysName = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+            const activeDay = [];
+            this.campaign.campaign_schedule_data.forEach(obj => {
+                const startDate = new Date(obj.campaign_start);
+                const endDate = new Date(obj.campaign_end);
+                while (startDate <= endDate) {
+                    const dayIndex = startDate.getDay();
+                    activeDay.push(daysName[dayIndex]);
+                    startDate.setDate(startDate.getDate() + 1);
+                }
+            });
+            this.disabledDay = this.checkActiveData(activeDay);
+            if (getFullDay) return;
+            if (activeDay.includes('Сб') || activeDay.includes('Вс')) {
+                return [
+                    {time: [...this.timePeriod.slice(7, 22 + 1)], type: 'Выходные'},
+                    {time: [...this.timePeriod.slice(7, 14 + 1), ...this.timePeriod.slice(17, 22 + 1)], type: 'Будни'}
+                ];
+            } else {
+                return [
+                    {time: [...this.timePeriod.slice(7, 14 + 1), ...this.timePeriod.slice(17, 22 + 1)], type: 'Будни'}
+                ];
+            }
+        },
+        checkActiveData(days) {
+            return Array.from(new Set(days));
         },
         updateStore(params) {
             this.$store.dispatch('updateCampaign', {campaign: params || this.campaign});

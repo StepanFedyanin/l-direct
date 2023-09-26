@@ -67,7 +67,13 @@ export default class extends REST {
             throw new RESTError(error, 'Не удалось получить компании');
         });
     }
-
+    static getUserCampaignsAllTypes(){
+        return this._get(`direct/short_campaign_type/`, {}, {}).then((data) => {
+            return data;
+        }).catch((error) => {
+            throw new RESTError(error, 'Не удалось получить типы');
+        });
+    }
     static getUserCampaignsForTypes(id) {
         return this._get(`direct/user_campaign/by_type/${id}/`, {}, {}).then((data) => {
             return data;
@@ -111,7 +117,7 @@ export default class extends REST {
 
     static getCamaignType(campaign) {
         let params = Object.assign({}, campaign);
-        return this._get(`direct/camaign_type`, {}, params).then((data) => {
+        return this._get(`direct/campaign_type`, {}, params).then((data) => {
             return data;
         }).catch((error) => {
             throw new RESTError(error, 'Не удалось получить типы компаний');

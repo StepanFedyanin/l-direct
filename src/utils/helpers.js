@@ -1,6 +1,6 @@
 //import _keys from 'lodash/keys';
-import { parse, format } from 'fecha';
-import { servicePath } from "@/settings";
+import {parse, format} from 'fecha';
+import {servicePath} from "@/settings";
 
 const helpers = {
     parseDate: (value, template) => {
@@ -10,13 +10,11 @@ const helpers = {
     formatDate: (value, template) => {
         return format(value, template);
     },
-    deleteKeyObj(obj,keysObj){
-       let newObj = {}
-        for (let keyObj in keysObj){
-            for (let key in obj) {
-                if (key!==keyObj){
-                    newObj[key] = obj[key];
-                }
+    deleteKeyObj(obj, keyObj) {
+        let newObj = {}
+        for (let key in obj) {
+            if (key !== keyObj) {
+                newObj[key] = obj[key];
             }
         }
         return newObj;
@@ -86,7 +84,7 @@ const helpers = {
                     },
                     false,
                 );
-            });  
+            });
         }
     },
 
@@ -94,7 +92,7 @@ const helpers = {
         let base64Url = token.split('.')[1];
         let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         let jsonPayload = decodeURIComponent(atob(base64).split('').map(
-            function(c) {
+            function (c) {
                 return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
             }
         ).join(''));
@@ -103,7 +101,7 @@ const helpers = {
 }
 
 export default {
-    install (app) {
+    install(app) {
         app.helpers = helpers
         app.config.globalProperties.$helpers = helpers
     }

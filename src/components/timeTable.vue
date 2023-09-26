@@ -26,6 +26,7 @@
                     <b-form-checkbox
                         :id="`hour-${hour - 1}`"
                         v-model="hours[hour - 1]"
+                        :disabled="this.disabledTimeCheckbox(hour-1)"
                         name="hour"
                         value="1"
                         unchecked-value="0"
@@ -52,6 +53,7 @@
                         name="weekday"
                         value="1"
                         unchecked-value="0"
+                        :disabled="!this.disabledDay.includes(day)"
                         @change="changeDay(index, $event,day)"
                     >
                     </b-form-checkbox>
@@ -128,7 +130,15 @@ export default {
         },
         idKey: {
             type: Number,
-            default: Date.now()
+            default() {
+                return Date.now();
+            }
+        },
+        disabledDay: {
+            type: Array,
+            default() {
+                return [];
+            }
         }
     },
     created() {
@@ -159,18 +169,34 @@ export default {
             weekdays: new Array(7).fill('0'),
             hours: new Array(24).fill('0'),
             disableTime: {
-                weekdays: [0, 1, 2, 3, 4, 5, 6, 23],
-                weekend: [0, 1, 2, 3, 4, 5, 6, 7, 8, 23]
+                weekdays: [0, 1, 2, 3, 4, 5, 6, 15, 16, 23],
+                weekend: [0, 1, 2, 3, 4, 5, 6, 7, 8, 23],
             }
-        };
+        }
     },
     methods: {
         changeHour(index, data) {
             this.schedule.forEach((element, i) => {
-                if (i === 5 || i === 6) {
+                if (i === 0){
+                    this.schedule[i][index] = this.disabledTime('Пн', index) ? '0' : data;
+                }
+                if (i === 1){
+                    this.schedule[i][index] = this.disabledTime('Вт', index) ? '0' : data;
+                }
+                if (i === 2){
+                    this.schedule[i][index] = this.disabledTime('Ср', index) ? '0' : data;
+                }
+                if (i === 3){
+                    this.schedule[i][index] = this.disabledTime('Чт', index) ? '0' : data;
+                }
+                if (i === 4){
+                    this.schedule[i][index] = this.disabledTime('Пт', index) ? '0' : data;
+                }
+                if (i === 5){
+                    this.schedule[i][index] = this.disabledTime('Сб', index) ? '0' : data;
+                }
+                if (i === 6){
                     this.schedule[i][index] = this.disabledTime('Вс', index) ? '0' : data;
-                } else {
-                    this.schedule[i][index] = this.disabledTime('', index) ? '0' : data;
                 }
             });
             if (data === '0') {
@@ -257,8 +283,15 @@ export default {
             }
         },
         disabledTime(day, time) {
-            if (day === 'Сб' || day === 'Вс') return this.disableTime.weekend.includes(time);
-            else return this.disableTime.weekdays.includes(time);
+            if (day === '') return this.disableTime.weekend.includes(time);
+            if (day === 'Сб' || day === 'Вс') return !this.disableTime.weekend.includes(time) * this.disabledDay.includes(day) === 0;
+            else return !this.disableTime.weekdays.includes(time) * this.disabledDay.includes(day) === 0;
+        },
+        disabledTimeCheckbox(time) {
+            if (this.disabledDay.length === 0) return true
+            return this.disabledDay.includes('Сб') || this.disabledDay.includes('Вс') ?
+                this.disableTime.weekend.includes(time) :
+                this.disableTime.weekdays.includes(time)
         },
         fillingDaysTime(array, data, day) {
             return array.map((data, index) => {

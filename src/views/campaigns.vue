@@ -2,19 +2,26 @@
     <topBar/>
     <div class="app__block capmaigns d-flex w-100 flex-row">
         <sideBar/>
-
         <div class="app__main campaigns pb-5">
             <h1 class="campaigns__title mb-5">Мои кампании</h1>
             <div class="campaigns__filters mb-5">
                 <b-button
-                    v-for="item in campaignsFilters"
-                    :key="`filter-${item.name}`"
-                    :variant="currentFilter === item.name ? 'warning' : 'light'"
+                    :variant="currentFilter === 'all' ? 'warning' : 'light'"
                     class="campaigns__filters-item me-4"
                     size=""
-                    @click.prevent="changeFilter(item.name)"
+                    @click.prevent="changeFilter('all')"
                 >
-                    {{ item.label }}
+                    Все компании
+                </b-button>
+                <b-button
+                    v-for="item in campaignsFilters"
+                    :key="`filter-${item.name}`"
+                    :variant="currentFilter === item.id ? 'warning' : 'light'"
+                    class="campaigns__filters-item me-4"
+                    size=""
+                    @click.prevent="changeFilter(item.id)"
+                >
+                    {{ item.rus_type }}
                 </b-button>
             </div>
             <CampaignList :campaigns="campaigns" :loader="!showLoaderCamping"/>
@@ -38,27 +45,7 @@ export default {
     props: {},
     data() {
         return {
-            campaignsFilters: [{
-                name: 'all',
-                label: 'Все кампании',
-                show: true,
-            }, {
-                name: 10,
-                label: 'Аудиоролики',
-                show: true,
-            }, {
-                name: 6,
-                label: 'Частные объявления',
-                show: true,
-            }, {
-                name: 7,
-                label: 'Текстовые ролики',
-                show: true,
-            }, {
-                name: 8,
-                label: 'Идеи',
-                show: true,
-            }],
+            campaignsFilters: [],
             currentFilter: 'all',
             campaigns: [],
             showLoaderCamping: false,
@@ -70,13 +57,14 @@ export default {
             if (value === 'all') {
                 this.getCampaigns();
             } else {
-                this.getCampaignsTypes();
+                this.getCampaignsTypesForUser();
             }
         }
     },
     computed: {},
     created() {
         this.getCampaigns();
+        this.getCampaignsTypes();
     },
     methods: {
         getCampaigns() {
@@ -91,7 +79,17 @@ export default {
             })
 
         },
-        getCampaignsTypes() {
+        getCampaignsTypes(){
+            this.showLoaderCamping = false;
+            app.getUserCampaignsAllTypes().then(data => {
+                this.campaignsFilters = data;
+            }).catch(err => {
+                this.$store.dispatch('showError', err);
+            }).finally(() => {
+                this.showLoaderCamping = false;
+            })
+        },
+        getCampaignsTypesForUser() {
             this.showLoaderCamping = false;
             app.getUserCampaignsForTypes(this.currentFilter).then(data => {
                 this.campaigns = data;

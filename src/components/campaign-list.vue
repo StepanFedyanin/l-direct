@@ -38,7 +38,8 @@
                         <div class="campaigns__item-content-block">
                             <p><span>Регионы:</span> {{ this.getRegions(campaign.regions) }}</p>
                         </div>
-                        <div v-if="campaign.time_schedule_data[0]?.name" class="campaigns__item-content-block">
+                        <div v-if="campaign.time_schedule_data[0]&&campaign.ads_type?.type==='personal'"
+                             class="campaigns__item-content-block">
                             <p><span>Время показов:</span> {{ this.getShowTime(campaign.time_schedule_data) }}</p>
                         </div>
                         <div class="campaigns__item-content-block">
@@ -201,8 +202,15 @@ export default {
         },
         getShowTime(array) {
             return array.map(item => {
-                return item.name
-            }).join(', ')
+                switch (item) {
+                    case 'morning':
+                        return 'Утро';
+                    case 'daytime':
+                        return 'День';
+                    case 'evening':
+                        return 'Вечер';
+                }
+            }).join(', ');
         },
         onSubmitPromo() {
 

@@ -201,6 +201,7 @@ export default {
             this.showModalCampaignNew = false;
             if (confirm) {
                 this.$store.dispatch('clearCampaign');
+                this.campaign = this.$store.state.campaign;
             } else {
                 this.campaign = this.$store.state.campaign;
                 let nextViews = ''
@@ -247,7 +248,14 @@ export default {
                 })
             } else {
                 this.$store.dispatch('setCampaignStep', {campaign_step: 3});
-                this.$store.dispatch('updateCampaign', {campaign: {...this.campaign, status: 3, step: 2}});
+                this.$store.dispatch('updateCampaign', {
+                    campaign: {
+                        ...this.campaign,
+                        status: 3,
+                        step: 2,
+                        time_schedule_data: this.campaign.ads_type_str === 'audio' ? [[]] : []
+                    }
+                });
                 this.next();
             }
         },
