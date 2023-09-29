@@ -26,7 +26,7 @@
                     <b-form-checkbox
                         :id="`hour-${hour - 1}`"
                         v-model="hours[hour - 1]"
-                        :disabled="this.disabledTimeCheckbox(hour-1)"
+                        :disabled="disabledTimeCheckbox(hour-1)"
                         name="hour"
                         value="1"
                         unchecked-value="0"
@@ -53,7 +53,7 @@
                         name="weekday"
                         value="1"
                         unchecked-value="0"
-                        :disabled="!this.disabledDay.includes(day)"
+                        :disabled="disabledWeekDay(index,day)"
                         @change="changeDay(index, $event,day)"
                     >
                     </b-form-checkbox>
@@ -73,7 +73,7 @@
                         button-variant="outline-warning"
                         class="m--col-btn"
                         style="background: red"
-                        :disabled="this.disabledTime(day,hour-1)"
+                        :disabled="disabledTime(day,hour-1)"
                         @change="changeCell(index, hour - 1, $event)"
                     >
                     </b-form-checkbox>
@@ -134,7 +134,7 @@ export default {
                 return Date.now();
             }
         },
-        disabledDay: {
+        activeDays: {
             type: Array,
             default() {
                 return [];
@@ -177,25 +177,25 @@ export default {
     methods: {
         changeHour(index, data) {
             this.schedule.forEach((element, i) => {
-                if (i === 0){
+                if (i === 0) {
                     this.schedule[i][index] = this.disabledTime('Пн', index) ? '0' : data;
                 }
-                if (i === 1){
+                if (i === 1) {
                     this.schedule[i][index] = this.disabledTime('Вт', index) ? '0' : data;
                 }
-                if (i === 2){
+                if (i === 2) {
                     this.schedule[i][index] = this.disabledTime('Ср', index) ? '0' : data;
                 }
-                if (i === 3){
+                if (i === 3) {
                     this.schedule[i][index] = this.disabledTime('Чт', index) ? '0' : data;
                 }
-                if (i === 4){
+                if (i === 4) {
                     this.schedule[i][index] = this.disabledTime('Пт', index) ? '0' : data;
                 }
-                if (i === 5){
+                if (i === 5) {
                     this.schedule[i][index] = this.disabledTime('Сб', index) ? '0' : data;
                 }
-                if (i === 6){
+                if (i === 6) {
                     this.schedule[i][index] = this.disabledTime('Вс', index) ? '0' : data;
                 }
             });
@@ -225,18 +225,34 @@ export default {
             this.preset = null;
             this.$emit('changeScheduleData', this.schedule);
         },
-        checkControl() {
-            this.weekdays.forEach((element, i) => {
-                if (this.schedule[i].indexOf('0') === -1) {
-                    this.weekdays[i] = '1';
-                }
-            });
-            this.hours.forEach((element, i) => {
-                let col = this.schedule.map((value, row) => this.schedule[row][i]);
-                if (col.indexOf('0') === -1) {
-                    this.hours[i] = '1';
-                }
-            });
+        checkControl(full_line=true) {
+            if (full_line){
+                this.weekdays.forEach((element, i) => {
+                    if (this.schedule[i].indexOf('0') === -1) {
+                        this.weekdays[i] = '1';
+                    }
+                });
+                this.hours.forEach((element, i) => {
+                    let col = this.schedule.map((value, row) => this.schedule[row][i]);
+                    if (col.indexOf('0') === -1) {
+                        this.hours[i] = '1';
+                    }
+                });
+            }else {
+                this.weekdays.forEach((element, i) => {
+                    if (this.schedule[i].indexOf('1') !== -1) {
+                        this.weekdays[i] = '1';
+                    }else {
+                        this.weekdays[i] = '0';
+                    }
+                });
+                this.hours.forEach((element, i) => {
+                    let col = this.schedule.map((value, row) => this.schedule[row][i]);
+                    if (col.indexOf('0') === -1) {
+                        this.hours[i] = '1';
+                    }
+                });
+            }
         },
         setPreset(preset) {
             this.preset = preset;
@@ -284,12 +300,12 @@ export default {
         },
         disabledTime(day, time) {
             if (day === '') return this.disableTime.weekend.includes(time);
-            if (day === 'Сб' || day === 'Вс') return !this.disableTime.weekend.includes(time) * this.disabledDay.includes(day) === 0;
-            else return !this.disableTime.weekdays.includes(time) * this.disabledDay.includes(day) === 0;
+            if (day === 'Сб' || day === 'Вс') return !this.disableTime.weekend.includes(time) * this.activeDays.includes(day) === 0;
+            else return !this.disableTime.weekdays.includes(time) * this.activeDays.includes(day) === 0;
         },
         disabledTimeCheckbox(time) {
-            if (this.disabledDay.length === 0) return true
-            return this.disabledDay.includes('Сб') || this.disabledDay.includes('Вс') ?
+            if (this.activeDays.length === 0) return true
+            return this.activeDays.includes('Сб') || this.activeDays.includes('Вс') ?
                 this.disableTime.weekend.includes(time) :
                 this.disableTime.weekdays.includes(time)
         },
@@ -302,6 +318,14 @@ export default {
                 }
             })
         },
+        disabledWeekDay(index, day) {
+            this.checkControl(false);
+            if (!this.activeDays.includes(day)) {
+                this.schedule[index].fill('0');
+                return true;
+            }
+            return false;
+        }
     }
 }
 </script>

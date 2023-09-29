@@ -30,7 +30,7 @@ const vuexPersist = new VuexPersist({
 const campaignTemplate = () => {
     return {
         ads_type: null,
-        ads_type_str:null,
+        ads_type_str: null,
         ads_file: null,
         person: null,
         user_name: '',
@@ -42,18 +42,16 @@ const campaignTemplate = () => {
         campaign_schedule: false, // swith для включения дополнительных диапазонов дат.
         campaign_schedule_data: [{}], // { campaign_start: '2021-12-01', campaign_end: '2021-12-31' }
         time_schedule: true, // switch для переключения использования time_period данных или массива сетки
-        time_period_type: 'Ежедневно',
-        time_period_start: '00:00',
-        time_period_end: '20:00',
+        time_period: [],
         time_schedule_data: [], //  7 массивов, по 24 элемена в кажом (0 или 1)
         notification_email: '',
         notification_moderate: true,
         notification_campaign_end: true,
         promocode: null,
-        status:null,
-        cost_campaign:null,
-        count_view:null,
-        step:1
+        status: null,
+        cost_campaign: null,
+        count_view: null,
+        step: 1
     }
 };
 
@@ -140,3 +138,5 @@ const store = createStore({
 });
 
 export default store;
+
+

@@ -232,6 +232,7 @@ export default {
             return this.campaign.ads_type_str === 'text' || this.campaign.ads_type_str === 'idea'
         },
         onSubmit() {
+
             if (this.checkIsNextStep()) {
                 this.showLoaderSending = true;
                 app.sendAdsInfo(this.$helpers.deleteKeyObj({

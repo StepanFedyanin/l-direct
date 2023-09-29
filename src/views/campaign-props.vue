@@ -110,10 +110,7 @@
                     </b-collapse>
                 </b-form-group>
 
-                <div
-                    v-if="!isCheckAdsType('personal')"
-                    class="col-12 mb-3"
-                >
+                <div class="col-12 mb-3">
                     <div class="form-control h3">
                         Стоимость выхода ролика: {{ airingPrice }} ₽
                     </div>
@@ -259,13 +256,13 @@
                     :show="campaign.time_schedule"
                     @changeScheduleData="changeScheduleData"
                     v-if="campaign.time_schedule"
-                    :disabledDay="disabledDay"
+                    :activeDays="activeDay"
                 />
                 <template v-else>
                     <label class="form-label text-black"><strong>Настройка показов</strong></label>
                     <div class="row">
                         <div
-                            v-for="activeDay in gettingActiveDays()"
+                            v-for="activeDay in timeSelection"
                             :key="activeDay.type+Date.now()"
                             class="row"
                         >
@@ -284,11 +281,12 @@
                             >
                                 <b-form-select
                                     id="select-period-start"
-                                    v-model="campaign.time_period_start"
-                                    :options="activeDay.time"
+                                    v-model="activeDay.period_start"
+                                    :options="gettingActiveTime(activeDay.type,activeDay.period_start,activeDay.period_end,'start')"
                                     required
+                                    :disabled="isDisabledTimeSelection(activeDay.type)"
                                     size="lg"
-                                    @change="totalPrice"
+                                    @change="changeActiveTime"
                                 ></b-form-select>
                             </b-form-group>
 
@@ -298,11 +296,12 @@
                             >
                                 <b-form-select
                                     id="select-period-end"
-                                    v-model="campaign.time_period_end"
-                                    :options="activeDay.time"
+                                    v-model="activeDay.period_end"
+                                    :options="gettingActiveTime(activeDay.type,activeDay.period_start,activeDay.period_end,'end')"
                                     required
+                                    :disabled="isDisabledTimeSelection(activeDay.type)"
                                     size="lg"
-                                    @change="totalPrice"
+                                    @change="changeActiveTime"
                                 ></b-form-select>
                             </b-form-group>
                         </div>
@@ -397,11 +396,6 @@ export default {
                 value: 5,
                 selected: true
             }],
-            typePeriod: [
-                'Ежедневно',
-                'Рабочие дни',
-                'Выходные'
-            ],
             timePeriod: [
                 '00:00', '01:00', '02:00', '03:00', '04:00', '05:00',
                 '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
@@ -409,6 +403,7 @@ export default {
                 '18:00', '19:00', '20:00', '21:00', '22:00', '23:00',
                 '24:00'
             ],
+            timeSelection: [],
             regions: [],
             showTime: [
                 {
@@ -443,7 +438,8 @@ export default {
             bearerToken: undefined,
             files: [],
             showLoaderSending: false,
-            disabledDay: []
+            activeDay: [],
+            activeTime: {}
         };
     },
     computed: {
@@ -473,7 +469,6 @@ export default {
         this.campaign = this.$store.state.campaign;
         this.bearerToken = this.$store.state.access;
         this.getRegions();
-        this.gettingActiveDays(true);
         if (this.campaign.ads_file) {
             app.getAdsFile(this.campaign.ads_file).then(res => {
                 Promise.resolve(this.$helpers.getFileInfo(res.file, 'audio')).then((file) => {
@@ -495,25 +490,46 @@ export default {
                 this.$store.dispatch('showError', err);
             });
         }
+        this.activeTime = {
+            weekend: [...this.timePeriod.slice(9, 22 + 1)],
+            weekday: [...this.timePeriod.slice(7, 14 + 1), ...this.timePeriod.slice(17, 22 + 1)]
+        }
+        if (this.campaign.time_period.length === 0) {
+            this.timeSelection = [
+                {
+                    type: 'Будни',
+                    period_start: this.activeTime.weekday[0],
+                    period_end: this.activeTime.weekday[this.activeTime.weekday.length - 1],
+                },
+                {
+                    type: 'Выходные',
+                    period_start: this.activeTime.weekend[0],
+                    period_end: this.activeTime.weekend[this.activeTime.weekend.length - 1],
+                }
+            ];
+        } else this.timeSelection = this.campaign.time_period;
+        this.gettingActiveDays();
     },
     methods: {
         totalPrice() {
             let total = 0;
             let countView = 0;
-            const quantityDays = this.countingDays(this.campaign.campaign_schedule_data, this.campaign.time_period_type);
+            // const quantityDays = this.countingDays(this.campaign.campaign_schedule_data, this.campaign.time_period_type);
             if (this.campaign.ads_type_str === 'audio') {
-                const countingTime = this.countingTime(this.campaign.time_schedule, this.campaign.time_schedule_data, this.campaign.time_period_end);
-                countView = countingTime * quantityDays;
-                total = this.airingPrice * quantityDays * countingTime;
-            } else {
-                const activeTime = this.campaign.time_schedule_data.length;
-                countView = activeTime * quantityDays
-                total = this.airingPrice * activeTime * quantityDays
+                const countingTime = this.countingTime(this.campaign.time_schedule, this.timeSelection);
+                console.log('countingTime', countingTime);
+                // countView = countingTime * quantityDays;
+                // total = this.airingPrice * quantityDays * countingTime;
             }
+            // else {
+            //     // const activeTime = this.campaign.time_schedule_data.length;
+            //     // countView = activeTime * quantityDays
+            //     // total = this.airingPrice * activeTime * quantityDays
+            // }
+            // this.campaign.time_period = this.$helpers.removeKeys(this.timeSelection, ['time', 'disabled']);
             this.campaign.cost_campaign = total;
             this.campaign.count_view = countView;
             this.updateStore();
-            return total;
         },
         getRegions() {
             app.getRegions(this.campaign.ads_type).then(res => {
@@ -564,7 +580,7 @@ export default {
                 }, 0);
             }
         },
-        countingTime(isTable, data, timeTable) {
+        countingTime(isTable, data) {
             if (isTable) {
                 let count = 0;
                 for (let i = 0; i < data.length; i++) {
@@ -575,12 +591,16 @@ export default {
                     }
                 }
                 return count;
-            }
-            if (timeTable) {
-                const start = new Date(`2004-1-1 ${data.timeStart}`).getHours();
-                const end = new Date(`2004-1-1 ${data.timeEnd}`).getHours();
-                if (start >= end) return 0;
-                return end - start;
+            } else {
+                let count = 0;
+                data.map(item => {
+                    if (item.type === 'Будни') {
+                        // const startIndex = this.activeTime.weekday.indexOf(item.period_start);
+                        // const endIndex = this.activeTime.weekday.indexOf(item.period_end);
+                        console.log('time', 'item.period_start', item.period_start, 'item.period_end', item.period_end);
+                    }
+                })
+                return count;
             }
         },
         addCompanyPeriod() {
@@ -588,7 +608,7 @@ export default {
         },
         deleteCompanyPeriod(index) {
             this.campaign.campaign_schedule_data.splice(index, 1);
-            this.gettingActiveDays(true);
+            this.gettingActiveDays();
         },
         changeScheduleData(time_schedule_data) {
             this.campaign.time_schedule_data = time_schedule_data;
@@ -598,15 +618,13 @@ export default {
             if (day.id) {
                 this.campaignStartDateError = null;
             }
-            this.updateStore();
-            this.gettingActiveDays(true);
+            this.gettingActiveDays();
         },
         changeCampaignEndDate(day) {
             if (day.id) {
                 this.campaignEndDateError = null;
             }
-            this.updateStore();
-            this.gettingActiveDays(true);
+            this.gettingActiveDays();
         },
         selectAdsFile(newFile, oldFile) {
             this.adsFile.error = '';
@@ -694,33 +712,44 @@ export default {
                 });
             }
         },
-        gettingActiveDays(getFullDay = false) {
+        gettingActiveDays() {
+            this.campaign.time_period = [];
             const daysName = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
-            const activeDay = [];
+            const activeDays = [];
             this.campaign.campaign_schedule_data.forEach(obj => {
                 const startDate = new Date(obj.campaign_start);
                 const endDate = new Date(obj.campaign_end);
                 while (startDate <= endDate) {
                     const dayIndex = startDate.getDay();
-                    activeDay.push(daysName[dayIndex]);
+                    activeDays.push(daysName[dayIndex]);
                     startDate.setDate(startDate.getDate() + 1);
                 }
             });
-            this.disabledDay = this.checkActiveData(activeDay);
-            if (getFullDay) return;
-            if (activeDay.includes('Сб') || activeDay.includes('Вс')) {
-                return [
-                    {time: [...this.timePeriod.slice(7, 22 + 1)], type: 'Выходные'},
-                    {time: [...this.timePeriod.slice(7, 14 + 1), ...this.timePeriod.slice(17, 22 + 1)], type: 'Будни'}
-                ];
+            this.activeDay = Array.from(new Set(activeDays));
+        },
+        gettingActiveTime(dayType, startTime, endTime, typeChange) {
+            let startIndex = 0;
+            let endIndex = 0;
+            if (dayType === 'Будни') {
+                startIndex = this.activeTime.weekday.indexOf(startTime);
+                endIndex = this.activeTime.weekday.indexOf(endTime);
+                return typeChange === 'start' ? this.activeTime.weekday.slice(0, endIndex + 1) : this.activeTime.weekday.slice(startIndex, this.activeTime.weekday.length);
             } else {
-                return [
-                    {time: [...this.timePeriod.slice(7, 14 + 1), ...this.timePeriod.slice(17, 22 + 1)], type: 'Будни'}
-                ];
+                startIndex = this.activeTime.weekend.indexOf(startTime);
+                endIndex = this.activeTime.weekend.indexOf(endTime);
+                return typeChange === 'start' ? this.activeTime.weekend.slice(0, endIndex + 1) : this.activeTime.weekend.slice(startIndex, this.activeTime.weekend.length);
             }
         },
-        checkActiveData(days) {
-            return Array.from(new Set(days));
+        isDisabledTimeSelection(dayType) {
+            const daysName = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+            if (dayType === 'Будни') {
+                return !this.activeDay.some(day => daysName.includes(day) && day !== 'Вс' && day !== 'Сб');
+            }
+            return !(this.activeDay.includes('Сб') || this.activeDay.includes('Вс'));
+        },
+        changeActiveTime() {
+            this.campaign.time_period = this.timeSelection;
+            this.totalPrice();
         },
         updateStore(params) {
             this.$store.dispatch('updateCampaign', {campaign: params || this.campaign});

@@ -10,10 +10,13 @@ const helpers = {
     formatDate: (value, template) => {
         return format(value, template);
     },
-    deleteKeyObj(obj, keyObj) {
-        let newObj = {}
-        for (let key in obj) {
-            if (key !== keyObj) {
+    removeKeys(obj, keys) {
+        if (Array.isArray(obj)) {
+            return obj.map((item) => this.removeKeys(item, keys));
+        }
+        const newObj = {};
+        for (const key in obj) {
+            if (!keys.includes(key)) {
                 newObj[key] = obj[key];
             }
         }
