@@ -237,7 +237,6 @@ export default {
                 this.showLoaderSending = true;
                 app.sendAdsInfo(this.$helpers.deleteKeyObj({
                     ...this.campaign,
-                    status: 1,
                     step: 2
                 }, ['ads_type_str', 'step'])).then(res => {
                     this.campaign = res;
@@ -252,7 +251,6 @@ export default {
                 this.$store.dispatch('updateCampaign', {
                     campaign: {
                         ...this.campaign,
-                        status: 3,
                         step: 2,
                         time_schedule_data: this.campaign.ads_type_str === 'audio' ? [[]] : []
                     }

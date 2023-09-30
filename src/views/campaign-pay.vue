@@ -186,7 +186,7 @@ export default {
             this.showLoaderSending = true;
             this.$store.dispatch('updateCampaign', {campaign: this.campaign});
             this.$store.dispatch('setCampaignStep', {campaign_step: 4});
-            app.sendAdsInfo(this.$helpers.deleteKeyObj(this.campaign, 'ads_type_str')).then(res => {
+            app.sendAdsInfo(this.$helpers.removeKeys(this.campaign, ['ads_type_str', 'step'])).then(res => {
                 this.campaign = res;
                 this.next('campaignFinish');
             }).catch(err => {
