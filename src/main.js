@@ -5,6 +5,7 @@ import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
 
 import BootstrapVue3 from 'bootstrap-vue-3';
 import VueUploadComponent from 'vue-upload-component';
+// import {Mask} from "maska";
 
 import router from './router/router';
 import store from './store/store';
@@ -14,6 +15,7 @@ import App from './App.vue'
 
 const app = createApp(App);
 app.use(BootstrapVue3);
+// app.use(Mask);
 app.use(store);
 app.use(router);
 app.component('file-upload', VueUploadComponent);

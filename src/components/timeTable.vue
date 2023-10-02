@@ -61,7 +61,7 @@
                 <div
                     v-for="hour in 24"
                     :key="`id-${idKey}-hour3-'${hour - 1}`"
-                    class="m--col"
+                    :class="disabledControl?'m--col active': 'm--col'"
                 >
                     <b-form-checkbox
                         :id="`hour_${index}_${hour - 1+Date.now()}`"
@@ -72,7 +72,6 @@
                         button
                         button-variant="outline-warning"
                         class="m--col-btn"
-                        style="background: red"
                         :disabled="disabledTime(day,hour-1)"
                         @change="changeCell(index, hour - 1, $event)"
                     >
@@ -225,8 +224,8 @@ export default {
             this.preset = null;
             this.$emit('changeScheduleData', this.schedule);
         },
-        checkControl(full_line=true) {
-            if (full_line){
+        checkControl(full_line = true) {
+            if (full_line) {
                 this.weekdays.forEach((element, i) => {
                     if (this.schedule[i].indexOf('0') === -1) {
                         this.weekdays[i] = '1';
@@ -238,11 +237,11 @@ export default {
                         this.hours[i] = '1';
                     }
                 });
-            }else {
+            } else {
                 this.weekdays.forEach((element, i) => {
                     if (this.schedule[i].indexOf('1') !== -1) {
                         this.weekdays[i] = '1';
-                    }else {
+                    } else {
                         this.weekdays[i] = '0';
                     }
                 });
@@ -329,4 +328,3 @@ export default {
     }
 }
 </script>
-

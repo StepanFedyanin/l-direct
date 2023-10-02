@@ -47,99 +47,110 @@
                                 {{ campaign.count_view }} )</p>
                         </div>
                     </div>
-                    <!--                    <div v-if="campaign.status===2" class="campaigns__item-content">-->
-                    <!--                        <div class="campaigns__item-promo">-->
-                    <!--                            <b-form-->
-                    <!--                                class="form mb-3"-->
-                    <!--                                @submit="onSubmitPromo"-->
-                    <!--                            >-->
-                    <!--                                <div class="row">-->
-                    <!--                                    &lt;!&ndash;                <b-form-group&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                    id="select-group-promo"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                    class="col-12 col-sm-7 mt-auto"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                    label="Промокод"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                >&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                  <b-form-input&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                      v-if="!promoInfo.id"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                      id="select-promo"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                      v-model="promoInfo.promo_code"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                      name="promocode"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                      size="lg"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                      :placeholder="promoInfo.error || promoInfo.name"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                      :disabled="showLoaderSending || showLoaderPromocode"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                      :state="promoInfo.error ? false : null"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                  ></b-form-input>&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                  <div&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                      v-else&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                      class="form-control form-control-lg"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                  >&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                    <strong>{{ promoInfo.promo_code }} - {{ promoInfo.name }}</strong>&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                  </div>&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                </b-form-group>&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                <b-form-group&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                    id="select-group-promo-submit"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                    class="col-12 col-sm-5 col-md-4 ms-auto mt-auto"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                >&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                  <b-overlay&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                      :show="showLoaderPromocode"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                      rounded&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                      spinner-small&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                      spinner-variant="warning"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                      class="d-block"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                  >&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                    <b-button&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                        type="submit"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                        variant="outline-warning"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                        size="lg"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                        class="w-100"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                        :disabled="showLoaderSending || true"&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                    >&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                      {{ promoInfo.id ? 'Изменить' : 'Применить' }}&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                    </b-button>&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                  </b-overlay>&ndash;&gt;-->
-                    <!--                                    &lt;!&ndash;                </b-form-group>&ndash;&gt;-->
-                    <!--                                </div>-->
-                    <!--                            </b-form>-->
-                    <!--                        </div>-->
-                    <!--                        <div class="campaigns__item-payment">-->
-                    <!--                            <div class="campaigns__item-payment-sum">-->
-                    <!--                                <span>К оплате: <strong class="text-nowrap">19 000 ₽</strong></span>-->
-                    <!--                            </div>-->
-                    <!--                        </div>-->
-                    <!--                        <b-overlay-->
-                    <!--                            :show="showLoaderSending"-->
-                    <!--                            rounded-->
-                    <!--                            spinner-small-->
-                    <!--                            spinner-variant="warning"-->
-                    <!--                            class="d-block pt-3"-->
-                    <!--                        >-->
-                    <!--                            <b-button-->
-                    <!--                                type="submit"-->
-                    <!--                                variant="warning"-->
-                    <!--                                class="d-block col-12"-->
-                    <!--                                size="lg"-->
-                    <!--                                :disabled="showLoaderPromocode"-->
-                    <!--                            >-->
-                    <!--                                Оплатить-->
-                    <!--                            </b-button>-->
-                    <!--                        </b-overlay>-->
-                    <!--                    </div>-->
                     <div class="campaigns__item-content">
                         <div class="campaigns__item-content-block">
                             <p><span>Статус компании: </span>{{ campaign.status.name }}</p>
                         </div>
-                        <div v-if="campaign.cost_campaign" class="campaigns__item-content-block row">
-                            <p class="col-5"><span>Оплачено: </span>{{ campaign.cost_campaign }} ₽</p>
-                            <p class="col-7 text-warning"><small>скидка по промокоду LRADIOTOP</small></p>
-                        </div>
+                        <template v-if="campaign.status.status==='Waiting_pay'">
+                            <div class="campaigns__item-promo">
+                                <b-form
+                                    class="form mb-3"
+                                    @submit="onSubmitPromo"
+                                >
+                                    <div class="row">
+                                        <b-form-group
+                                            id="select-group-promo"
+                                            class="col-12 col-sm-7 mt-auto"
+                                            label="Промокод"
+                                        >
+                                            <b-form-input
+                                                v-if="!campaign?.promocode"
+                                                id="select-promo"
+                                                v-model="campaign.promocode"
+                                                name="promocode"
+                                                size="lg"
+                                                :placeholder="campaign?.promocode?.error || campaign?.promocode?.name"
+                                                :disabled="showLoaderSending || showLoaderPromocode"
+                                                :state="campaign.promocode?.error ? false : null"
+                                            ></b-form-input>
+                                            <div class="form-control form-control-lg">
+                                                <strong>{{ campaign.promocode?.promo_code }} -
+                                                    {{ campaign.promocode?.name }}</strong>
+                                            </div>
+                                        </b-form-group>
+                                        <b-form-group
+                                            id="select-group-promo-submit"
+                                            class="col-12 col-sm-5 col-md-5 ms-auto mt-auto"
+                                        >
+                                            <b-overlay
+                                                :show="showLoaderPromocode"
+                                                rounded
+                                                spinner-small
+                                                spinner-variant="warning"
+                                                class="d-block"
+                                            >
+                                                <b-button
+                                                    type="submit"
+                                                    variant="outline-warning"
+                                                    size="lg"
+                                                    class="w-100"
+                                                    :disabled="showLoaderSending || true"
+                                                >
+                                                    {{ campaign.promocode?.id ? 'Изменить' : 'Применить' }}
+                                                </b-button>
+                                            </b-overlay>
+                                        </b-form-group>
+                                    </div>
+                                </b-form>
+                            </div>
+                            <div class="campaigns__item-payment">
+                                <div class="campaigns__item-payment-sum">
+                                    <span>К оплате: <strong
+                                        class="text-nowrap">{{ campaign.cost_campaign }}</strong></span>
+                                </div>
+                            </div>
+                            <b-overlay
+                                :show="showLoaderSending"
+                                rounded
+                                spinner-small
+                                spinner-variant="warning"
+                                class="d-block pt-3"
+                            >
+                                <b-button
+                                    type="submit"
+                                    variant="warning"
+                                    class="d-block col-12"
+                                    size="lg"
+                                    :disabled="showLoaderPromocode"
+                                >
+                                    Оплатить
+                                </b-button>
+                            </b-overlay>
+                        </template>
+                        <template v-if="campaign.status.status==='Paid'">
+                            <div class="row">
+                                <p class="col-5"><span>Оплачено: </span>{{ campaign.cost_campaign }} ₽</p>
+                                <p class="col-7 text-warning" v-if="campaign.promocode"><small>скидка по промокоду
+                                    campaign.promocode</small></p>
+                            </div>
+                        </template>
                         <div v-if="campaign.comment" class="campaigns__item-content-block">
                             <p><span>Комментарий L-Direct</span></p>
                             <p>{{ campaign.comment }}</p>
                         </div>
                     </div>
+                    <!--                    <div class="campaigns__item-content">-->
+                    <!--                        <div class="campaigns__item-content-block">-->
+                    <!--                            <p><span>Статус компании: </span>{{ campaign.status.name }}</p>-->
+                    <!--                        </div>-->
+                    <!--                        <div v-if="campaign.cost_campaign" class="campaigns__item-content-block row">-->
+                    <!--                            <p class="col-5"><span>Оплачено: </span>{{ campaign.cost_campaign }} ₽</p>-->
+                    <!--                            <p class="col-7 text-warning"><small>скидка по промокоду LRADIOTOP</small></p>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
                 </b-card>
             </div>
-            <div v-if="campaign.ads_type==='audio'" class="col-12 col-xxl-7">
+            <div v-if="campaign.ads_type.type==='audio'" class="col-12 col-xxl-7">
                 <b-card
                     body-class="d-flex flex-column"
                     class="campaigns__item-schedule mb-3"

@@ -235,9 +235,13 @@ export default {
 
             if (this.checkIsNextStep()) {
                 this.showLoaderSending = true;
-                app.sendAdsInfo(this.$helpers.removeKeys(this.campaign, ['ads_type_str', 'step'])).then(() => {
+                app.sendAdsInfo(this.$helpers.removeKeys({
+                    ...this.campaign,
+                    status: 'New'
+                }, ['ads_type_str', 'step'])).then(() => {
                     this.$store.dispatch('clearCampaign');
                     this.campaign = this.$store.state.campaign;
+                    this.next('campaignFinish');
                 }).catch(err => {
                     this.showLoaderSending = false;
                     this.$store.dispatch('showError', err);

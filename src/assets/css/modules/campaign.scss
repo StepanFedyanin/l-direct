@@ -102,6 +102,14 @@
 					}
 				}
 			}
+			.m--col.active{
+				.btn-check[disabled] + .btn-outline-warning {
+					background: #fcc10f;
+				}
+				.btn-check[disabled] + .btn-outline-warning:not(.active) {
+					background: transparent;
+				}
+			}
 			.btn-check[disabled] + .btn-outline-warning {
 				background: $color-lightgray;
 			}

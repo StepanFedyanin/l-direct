@@ -11,7 +11,7 @@
                 <div
                     class="h2 text-uppercase m-0 text-black"
                 >
-                    <strong>{{ campaign.cost_campaign }} ₽</strong>
+                    <strong>{{ getTotalPrice }} ₽</strong>
                 </div>
             </b-card>
         </div>
@@ -161,7 +161,19 @@ export default {
             amount: {}
         };
     },
-    computed: {},
+    computed: {
+        getTotalPrice() {
+            if (this.promoInfo.type_promo) {
+                if (this.promoInfo?.type_promo === "percent") {
+                    return this.campaign.cost_campaign - this.campaign.cost_campaign / this.promoInfo.percent;
+                } else {
+                    if (this.campaign.cost_campaign - this.promoInfo.amount <= 0) return 0
+                    else return this.campaign.cost_campaign - this.promoInfo.amount;
+                }
+            }
+            return this.campaign.cost_campaign;
+        }
+    },
     created() {
         this.campaign = this.$store.state.campaign;
         if (!this.campaign.notification_email) {
@@ -189,7 +201,11 @@ export default {
             this.showLoaderSending = true;
             this.$store.dispatch('updateCampaign', {campaign: this.campaign});
             this.$store.dispatch('setCampaignStep', {campaign_step: 4});
-            app.sendAdsInfo(this.$helpers.removeKeys(this.campaign, ['ads_type_str', 'step'])).then(res => {
+            app.sendAdsInfo(this.$helpers.removeKeys({
+                ...this.campaign,
+                status: 'Waiting_pay',
+                cost_campaign: this.getTotalPrice
+            }, ['ads_type_str', 'step'])).then(res => {
                 this.campaign = res;
                 this.next('campaignFinish');
             }).catch(err => {
