@@ -15,7 +15,7 @@
                 </b-button>
                 <b-button
                     v-for="item in campaignsFilters"
-                    :key="`filter-${item.name}`"
+                    :key="`filter-${item.id}`"
                     :variant="currentFilter === item.id ? 'warning' : 'light'"
                     class="campaigns__filters-item me-4"
                     size=""

@@ -270,7 +270,8 @@
                                 id="select-group-period"
                                 class="col-12 col-sm-6 mt-auto"
                             >
-                                <div class="form-control">
+                                <div
+                                    :class="isDisabledTimeSelection(activeDay.type)? 'form-control form-control--disabled': 'form-control'">
                                     {{ activeDay.type }}
                                 </div>
                             </b-form-group>
@@ -331,7 +332,8 @@
                             <b-form-checkbox
                                 class="col-6"
                                 :value="day.id"
-                                v-model="campaign.time_schedule_data"
+                                v-model="campaign.time_period"
+                                @change="totalPrice"
                             >
                                 {{ day.name }}
                             </b-form-checkbox>
@@ -339,7 +341,8 @@
                     </div>
                 </div>
                 <div class="card p-3 mb-3">
-                    <label class="form-label text-black mb-3"><strong>Стоимость выхода объявления: {{ totalPrice() }}
+                    <label class="form-label text-black mb-3"><strong>Стоимость выхода объявления:
+                        {{ this.campaign.cost_campaign || 0 }}
                         ₽</strong></label>
                     <label class="form-label text-black mb-4">Ваше объявление прозвучит в эфире в зависимости от
                         выбранных
@@ -493,7 +496,7 @@ export default {
             weekend: [...this.timePeriod.slice(9, 22 + 1)],
             weekday: [...this.timePeriod.slice(7, 14 + 1), ...this.timePeriod.slice(17, 22 + 1)]
         }
-        this.setTimeSelection();
+        if (this.campaign.ads_type_str === 'audio') this.setTimeSelection();
         this.getRegions();
         this.gettingActiveDays();
     },
@@ -518,20 +521,9 @@ export default {
             });
         },
         totalPrice() {
-            let total = 0;
-            let countView = 0;
-            // const quantityDays = this.countingDays(this.campaign.campaign_schedule_data, this.campaign.time_period_type);
-            if (this.campaign.ads_type_str === 'audio') {
-                const countingShow = this.countingShow();
-                countView = countingShow;
-                total = this.airingPrice * countingShow;
-            }
-            // else {
-            //     // const activeTime = this.campaign.time_schedule_data.length;
-            //     // countView = activeTime * quantityDays
-            //     // total = this.airingPrice * activeTime * quantityDays
-            // }
-            // this.campaign.time_period = this.$helpers.removeKeys(this.timeSelection, ['time', 'disabled']);
+            const countingShow = this.countingShow();
+            const countView = countingShow;
+            const total = this.airingPrice * countingShow;
             this.campaign.cost_campaign = total;
             this.campaign.count_view = countView;
             this.updateStore();
@@ -547,44 +539,6 @@ export default {
         isCheckAdsType(value) {
             return this.campaign.ads_type_str === value
         },
-        countingDays(days, type) {
-            if (type) {
-                let weekends = 0;
-                let weekdays = 0;
-                days.map(day => {
-                    const startDate = new Date(day.campaign_start);
-                    const endDate = new Date(day.campaign_end);
-                    let currentDate = new Date(startDate);
-                    while (currentDate <= endDate) {
-                        const dayOfWeek = currentDate.getDay();
-                        if (dayOfWeek === 0 || dayOfWeek === 6) {
-                            weekends++;
-                        } else {
-                            weekdays++;
-                        }
-                        currentDate.setDate(currentDate.getDate() + 1);
-                    }
-                })
-                if (type === 'Выходные') {
-                    return weekends;
-                } else if (type === 'Ежедневно') {
-                    return this.countingDays(days);
-                } else {
-                    return weekdays
-                }
-            } else {
-                return days.reduce((total, day) => {
-                    if (day.campaign_start && day.campaign_end) {
-                        const startDate = new Date(day.campaign_start);
-                        const endDate = new Date(day.campaign_end);
-                        const diffInDays = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
-                        return total + diffInDays + 1;
-                    } else {
-                        return total;
-                    }
-                }, 0);
-            }
-        },
         countingShow() {
             let countShow = 0;
             const weekdayParams = (this.definitionOfDays() && this.campaign.time_period[this.campaign.time_period.findIndex(period => period.type === 'Будни')]);
@@ -599,14 +553,18 @@ export default {
                 let currentDate = new Date(startDate);
                 while (currentDate <= endDate) {
                     const dayOfWeek = currentDate.getDay();
-                    if (this.campaign.time_schedule) {
-                        countShow += this.campaign.time_schedule_data[(dayOfWeek + 6) % 7].filter(item => item === '1').length
-                    } else {
-                        if (dayOfWeek === 0 || dayOfWeek === 6) {
-                            countShow += activeListTime.weekend.length;
+                    if (this.campaign.ads_type_str === 'audio') {
+                        if (this.campaign.time_schedule) {
+                            countShow += this.campaign.time_schedule_data[(dayOfWeek + 6) % 7].filter(item => item === '1').length
                         } else {
-                            countShow += activeListTime.weekday.length;
+                            if (dayOfWeek === 0 || dayOfWeek === 6) {
+                                countShow += activeListTime.weekend.length;
+                            } else {
+                                countShow += activeListTime.weekday.length;
+                            }
                         }
+                    } else {
+                        countShow += this.campaign.time_period.length;
                     }
                     currentDate.setDate(currentDate.getDate() + 1);
                 }
@@ -642,7 +600,6 @@ export default {
             if (!this.$refs.upload.active && newFile) {
                 let file = newFile.file;
                 Promise.resolve(this.$helpers.getFileInfo(file, 'audio')).then((result) => {
-                    //if (result.length) {
                     let file = result;
                     if (Math.round(file.duration) > 20) {
                         this.adsFile.error = 'Длина ролика превышает 20 сек.';
@@ -656,7 +613,6 @@ export default {
                             this.adsFile.play = !this.adsFile.file.paused;
                         });
                     }
-                    //}
                 });
             } else {
                 if (newFile && oldFile && !newFile.active && oldFile.active) {
@@ -676,7 +632,7 @@ export default {
         onSubmit() {
             this.totalPrice();
             let errors = false;
-            if (this.totalPrice() === 0) {
+            if (this.campaign.cost_campaign === 0) {
                 errors = true;
             }
             if (!this.adsFile.file && this.campaign.ads_type_str === 'audio') {
@@ -684,7 +640,6 @@ export default {
             }
             this.updateStore({...this.campaign, step: 3});
             if (!errors) {
-                // this.showLoaderSending = true;
                 this.$store.dispatch('updateCampaign', {campaign: this.campaign});
                 this.$store.dispatch('setCampaignStep', {campaign_step: 2});
                 this.next();
@@ -724,7 +679,6 @@ export default {
             }
         },
         gettingActiveDays() {
-            this.campaign.time_period = [];
             const daysName = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
             const activeDays = [];
             this.campaign.campaign_schedule_data.forEach(obj => {
@@ -780,6 +734,7 @@ export default {
             return this.activeDay.some(day => daysName.includes(day) && day !== 'Вс' && day !== 'Сб');
         },
         updateStore(params) {
+            console.log('updateStore');
             this.$store.dispatch('updateCampaign', {campaign: params || this.campaign});
         }
     }

@@ -40,7 +40,7 @@
                         </div>
                         <div v-if="campaign.time_schedule_data[0]&&campaign.ads_type?.type==='personal'"
                              class="campaigns__item-content-block">
-                            <p><span>Время показов:</span> {{ this.getShowTime(campaign.time_schedule_data) }}</p>
+                            <p><span>Время показов:</span> {{ this.getShowTime(campaign.time_period) }}</p>
                         </div>
                         <div class="campaigns__item-content-block">
                             <p><span>Стоимость показов:</span> {{ campaign.cost_campaign }} ₽ (выходов рекламы:

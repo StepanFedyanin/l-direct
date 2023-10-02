@@ -171,6 +171,9 @@ export default {
             // this.getAmount()
             this.checkPromo(this.campaign.promo_code)
         });
+        if (!this.campaign.ads_type) {
+            this.$router.push({name: 'campaign'});
+        }
     },
     methods: {
         onSubmitPromo() {
@@ -193,6 +196,13 @@ export default {
                 this.showLoaderSending = false;
                 this.$store.dispatch('showError', err);
             });
+            // app.submitCampaign(this.$helpers.removeKeys(this.campaign, ['ads_type_str', 'step'])).then(res => {
+            //     this.showLoaderSending = false;
+            //     window.location.href = res.url
+            // }).catch(err => {
+            //     this.showLoaderSending = false;
+            //     this.$store.dispatch('showError', err);
+            // });
         },
         next() {
             this.$router.push({name: 'campaignFinish', params: {completed: true}});

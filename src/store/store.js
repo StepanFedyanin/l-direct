@@ -43,7 +43,7 @@ const campaignTemplate = () => {
         campaign_schedule_data: [{}], // { campaign_start: '2021-12-01', campaign_end: '2021-12-31' }
         time_schedule: true, // switch для переключения использования time_period данных или массива сетки
         time_period: [],
-        time_schedule_data: [], //  7 массивов, по 24 элемена в кажом (0 или 1)
+        time_schedule_data: [[]], //  7 массивов, по 24 элемена в кажом (0 или 1)
         notification_email: '',
         notification_moderate: true,
         notification_campaign_end: true,

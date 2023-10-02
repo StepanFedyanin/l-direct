@@ -235,11 +235,9 @@ export default {
 
             if (this.checkIsNextStep()) {
                 this.showLoaderSending = true;
-                app.sendAdsInfo(this.$helpers.deleteKeyObj({
-                    ...this.campaign,
-                    step: 2
-                }, ['ads_type_str', 'step'])).then(res => {
-                    this.campaign = res;
+                app.sendAdsInfo(this.$helpers.removeKeys(this.campaign, ['ads_type_str', 'step'])).then(() => {
+                    this.$store.dispatch('clearCampaign');
+                    this.campaign = this.$store.state.campaign;
                 }).catch(err => {
                     this.showLoaderSending = false;
                     this.$store.dispatch('showError', err);
@@ -252,7 +250,6 @@ export default {
                     campaign: {
                         ...this.campaign,
                         step: 2,
-                        time_schedule_data: this.campaign.ads_type_str === 'audio' ? [[]] : []
                     }
                 });
                 this.next();
