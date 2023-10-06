@@ -1,0 +1,41 @@
+.splide {
+	&__track--nav > .splide__list > .splide__slide {
+		border: none;
+
+		&.is-active {
+			border: none;
+		}
+	}
+
+	&__arrows--ltr &__arrow--prev {
+		left: -3rem;
+	}
+
+	&__arrows--ltr &__arrow--next {
+		right: -3rem;
+	}
+
+	&__arrows--ttb &__arrow--prev {
+		top: 0;
+	}
+
+	&__arrows--ttb &__arrow--next {
+		bottom: 0;
+	}
+
+	&__arrow {
+		width: 3rem;
+		height: 3rem;
+		background: transparent;
+		opacity: 1;
+
+		svg {
+			fill: $color-orange;
+		}
+	}
+
+	&__arrow:focus,
+	&__arrow:focus-visible {
+		outline: none !important;
+	}
+}

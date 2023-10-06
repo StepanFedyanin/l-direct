@@ -1,0 +1,47 @@
+.app {
+	position: relative;
+	display: block;
+	min-height: 100vh;
+	&__top {
+		background: $color-white linear-gradient(90deg, rgba(248, 249, 250, 0.1) -0.71%, rgba(255, 121, 0, 0.1) 73.03%);
+	}
+	&__block {
+
+	}
+	&__main {
+		width: calc(100% - 380px);
+		/*
+		max-height: calc(100vh - 76px);
+		overflow-x: hidden;
+		overflow-y: auto;
+		*/
+		@include media-breakpoint-down(xl) {
+			width: calc(100% - 300px);	
+		}
+		@include media-breakpoint-down(lg) {
+			width: calc(100% - 100px);	
+		}
+	}
+	&__alert {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		color: $color-white;
+		border-color: $color-orange;
+		background: $color-orange-80 url('./assets/img/bg/cyrcles.svg') 50% 50% no-repeat;
+		background-size: auto 90%;
+		min-height: 50vh;
+	}
+	.m--gradient,
+	&.m--gradient {
+		background: $color-white linear-gradient(90deg, rgba(248, 249, 250, 0.1) -0.71%, rgba(255, 121, 0, 0.1) 73.03%);
+	}
+	a {
+		color: $color-orange;
+		text-decoration: none;
+		&:hover {
+			color: $color-black;
+			text-decoration: underline;
+		}
+	}
+}
